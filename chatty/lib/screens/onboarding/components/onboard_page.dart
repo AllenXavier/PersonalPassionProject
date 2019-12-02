@@ -115,17 +115,29 @@ class _OnboardPageState extends State<OnboardPage> {
             child: Padding(
               padding: const EdgeInsets.all(32.0),
               child: _currentPage != _numPages - 1
-                  ? Container(
-                color: Colors.transparent,
-                width: 50.0,
-                height: 50.0,
-                child: IconButton(
-                  icon: Icon(
-                    Icons.arrow_forward,
-                    color: Colors.white,
-                    size: 32,
-                  ),
-                  onPressed: _nextButtonPressed,
+                  ? FlatButton(
+                padding: EdgeInsets.all(0),
+                onPressed: _nextButtonPressed,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        'Next',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 22.0,
+                        ),
+                      ),
+                    ),
+                    Icon(
+                        Icons.arrow_forward,
+                        color: Colors.white,
+                        size: 32,
+                      ),
+                  ],
                 ),
               )
                   : Text(''),

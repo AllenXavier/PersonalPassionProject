@@ -31,7 +31,7 @@ class Onboarding extends StatelessWidget {
         ),
         Container(
           width: double.infinity,
-          height: 100,
+          height: 120,
           child: Align(
             alignment: Alignment.bottomCenter,
             child: Row(
@@ -50,9 +50,10 @@ class Onboarding extends StatelessWidget {
                 ),
 
                 Padding(
-                  padding: const EdgeInsets.only(right: 0),
+                  padding: const EdgeInsets.only(right: 32.0),
                   child: FlatButton(
-                    child: Text('skip',
+                    color: Colors.white30,
+                    child: Text('Skip',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 20.0,
