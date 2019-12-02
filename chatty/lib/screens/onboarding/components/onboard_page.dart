@@ -30,7 +30,7 @@ class _OnboardPageState extends State<OnboardPage> {
 
   final int _numPages = onboardData.length;
 
-  
+
   @override
   Widget build(BuildContext context) {
     var _currentPage = widget.pageModel.pageNumber;
@@ -57,74 +57,81 @@ class _OnboardPageState extends State<OnboardPage> {
     }
 
     return Scaffold(
-      body: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              stops: [0.1, 0.4, 0.7, 0.9],
-              colors: [
-                widget.pageModel.gradientColor1,
-                widget.pageModel.gradientColor2,
-                widget.pageModel.gradientColor3,
-                widget.pageModel.gradientColor4,
-              ],
-            ),
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              Padding(
-                padding: EdgeInsets.all(32.0),
-                child: Image.asset(widget.pageModel.imagePath),
+      body:
+      Stack(
+        children: <Widget>[
+          Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  stops: [0.1, 0.4, 0.7, 0.9],
+                  colors: [
+                    widget.pageModel.gradientColor1,
+                    widget.pageModel.gradientColor2,
+                    widget.pageModel.gradientColor3,
+                    widget.pageModel.gradientColor4,
+                  ],
+                ),
               ),
-              Padding(
-                padding: EdgeInsets.all(32.0),
-                child: Container(
-                  child: Column(
-                    children: <Widget>[
-                      Text(widget.pageModel.caption,
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 20.0,
-                        ),
-                      ),
-                      Text(widget.pageModel.description,
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 20.0,
-                        ),
-                      ),
-                    ],
-                  ),
-                )
-              ),
-
-              Row(
+              child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: _buildPageIndicator(),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(32.0),
-                child: _currentPage != _numPages - 1
-                    ? Container(
-                  color: Colors.transparent,
-                  width: 50.0,
-                  height: 50.0,
-                  child: IconButton(
-                    icon: Icon(
-                      Icons.arrow_forward,
-                      color: Colors.white,
-                      size: 32,
-                    ),
-                    onPressed: _nextButtonPressed,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Padding(
+                    padding: EdgeInsets.all(32.0),
+                    child: Image.asset(widget.pageModel.imagePath),
                   ),
-                )
-                    : Text(''),
-              ),
-            ],
+                  Padding(
+                      padding: EdgeInsets.all(32.0),
+                      child: Container(
+                        child: Column(
+                          children: <Widget>[
+                            Text(widget.pageModel.caption,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 20.0,
+                              ),
+                            ),
+                            Text(widget.pageModel.description,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 20.0,
+                              ),
+                            ),
+                          ],
+                        ),
+                      )
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: _buildPageIndicator(),
+                  ),
+                ],
+              )
+          ),
+          Align(
+            alignment: Alignment.bottomRight,
+            child: Padding(
+              padding: const EdgeInsets.all(32.0),
+              child: _currentPage != _numPages - 1
+                  ? Container(
+                color: Colors.transparent,
+                width: 50.0,
+                height: 50.0,
+                child: IconButton(
+                  icon: Icon(
+                    Icons.arrow_forward,
+                    color: Colors.white,
+                    size: 32,
+                  ),
+                  onPressed: _nextButtonPressed,
+                ),
+              )
+                  : Text(''),
+            ),
           )
+        ],
       ),
       bottomSheet: _currentPage == _numPages - 1
           ? Container(

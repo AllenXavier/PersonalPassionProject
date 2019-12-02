@@ -50,7 +50,7 @@ class Onboarding extends StatelessWidget {
                 ),
 
                 Padding(
-                  padding: const EdgeInsets.only(right: 32.0),
+                  padding: const EdgeInsets.only(right: 0),
                   child: FlatButton(
                     child: Text('skip',
                       style: TextStyle(
