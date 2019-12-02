@@ -1,16 +1,32 @@
 import 'package:chatty/screens/onboarding/components/onboard_page.dart';
+import 'package:chatty/screens/onboarding/data/onboard_page_data.dart';
+
 import 'package:flutter/material.dart';
 
 class Onboarding extends StatelessWidget {
+
+  final PageController pageController = PageController();
+
+  _skipButtonPressed() {
+    print('button pressed');
+    pageController.jumpToPage(
+      2,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Stack(
       children: <Widget>[
 
         PageView.builder(
-          itemCount: 4,
+          controller: pageController,
+          itemCount: onboardData.length,
           itemBuilder: (context, index) {
-            return OnboardPage();
+            return OnboardPage(
+              pageController: pageController,
+              pageModel:  onboardData[index],
+            );
           },
         ),
         Container(
@@ -35,11 +51,14 @@ class Onboarding extends StatelessWidget {
 
                 Padding(
                   padding: const EdgeInsets.only(right: 32.0),
-                  child: Text('skip',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 20.0,
+                  child: FlatButton(
+                    child: Text('skip',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20.0,
+                      ),
                     ),
+                    onPressed: _skipButtonPressed ,
                   ),
                 ),
               ],
