@@ -1,16 +1,15 @@
 import 'package:chatty/screens/onboarding/data/onboard_page_data.dart';
 import 'package:chatty/screens/onboarding/models/onboard_page_model.dart';
 import 'package:flutter/material.dart';
-
+import 'package:worm_indicator/shape.dart';
+import 'package:worm_indicator/worm_indicator.dart';
 
 class OnboardPage extends StatefulWidget {
-
   final PageController pageController;
   final OnboardPageModel pageModel;
   const OnboardPage(
       {Key key, @required this.pageModel, @required this.pageController})
       : super(key: key);
-
 
   @override
   _OnboardPageState createState() => _OnboardPageState();
@@ -19,21 +18,42 @@ class OnboardPage extends StatefulWidget {
 class _OnboardPageState extends State<OnboardPage> {
 
   _nextButtonPressed() {
-   print('button pressed');
-   widget.pageController.nextPage(
-     duration: Duration(
-       milliseconds: 500,
-     ),
-     curve: Curves.fastLinearToSlowEaseIn,
-   );
+    print('button pressed');
+    widget.pageController.nextPage(
+      duration: Duration(
+        milliseconds: 500,
+      ),
+      curve: Curves.fastLinearToSlowEaseIn,
+    );
   }
-
-  final int _numPages = onboardData.length;
-
 
   @override
   Widget build(BuildContext context) {
+
+    final int _numPages = onboardData.length;
     var _currentPage = widget.pageModel.pageNumber;
+
+    Widget buildExampleIndicatorWithShapeAndBottomPos(
+        Shape shape, double bottomPos) {
+      return Positioned(
+        bottom: bottomPos,
+        left: 0,
+        right: 0,
+        child: WormIndicator(
+          length: onboardData.length,
+          controller: widget.pageController,
+          shape: shape,
+          color: Colors.white30,
+          indicatorColor: Colors.white,
+        ),
+      );
+    }
+
+    final circleShape = Shape(
+      size: 8,
+      shape: DotShape.Circle,
+      spacing: 8,
+    );
 
     Widget _indicator(bool isActive) {
       return AnimatedContainer(
@@ -48,17 +68,8 @@ class _OnboardPageState extends State<OnboardPage> {
       );
     }
 
-    List<Widget> _buildPageIndicator() {
-      List<Widget> list = [];
-      for (int i = 0; i < _numPages; i++) {
-        list.add(i == _currentPage ? _indicator(true) : _indicator(false));
-      }
-      return list;
-    }
-
     return Scaffold(
-      body:
-      Stack(
+      body: Stack(
         children: <Widget>[
           Container(
               decoration: BoxDecoration(
@@ -87,13 +98,15 @@ class _OnboardPageState extends State<OnboardPage> {
                       child: Container(
                         child: Column(
                           children: <Widget>[
-                            Text(widget.pageModel.caption,
+                            Text(
+                              widget.pageModel.caption,
                               style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 20.0,
                               ),
                             ),
-                            Text(widget.pageModel.description,
+                            Text(
+                              widget.pageModel.description,
                               style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 20.0,
@@ -101,72 +114,71 @@ class _OnboardPageState extends State<OnboardPage> {
                             ),
                           ],
                         ),
-                      )
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: _buildPageIndicator(),
-                  ),
+                      )),
+//                  Row(
+//                    mainAxisAlignment: MainAxisAlignment.center,
+//                    children: _buildPageIndicator(),
+//                  ),
                 ],
-              )
-          ),
+              )),
           Align(
             alignment: Alignment.bottomRight,
             child: Padding(
               padding: const EdgeInsets.all(32.0),
               child: _currentPage != _numPages - 1
                   ? FlatButton(
-                padding: EdgeInsets.all(0),
-                onPressed: _nextButtonPressed,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(
-                        'Next',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 22.0,
-                        ),
+                      padding: EdgeInsets.all(0),
+                      onPressed: _nextButtonPressed,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              'Next',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 22.0,
+                              ),
+                            ),
+                          ),
+                          Icon(
+                            Icons.arrow_forward,
+                            color: Colors.white,
+                            size: 32,
+                          ),
+                        ],
                       ),
-                    ),
-                    Icon(
-                        Icons.arrow_forward,
-                        color: Colors.white,
-                        size: 32,
-                      ),
-                  ],
-                ),
-              )
+                    )
                   : Text(''),
             ),
-          )
+          ),
+          buildExampleIndicatorWithShapeAndBottomPos(circleShape, 150),
         ],
       ),
       bottomSheet: _currentPage == _numPages - 1
           ? Container(
-        height: 100.0,
-        width: double.infinity,
-        color: Colors.white,
-        child: GestureDetector(
-          onTap: () => print('Get started'),
-          child: Center(
-            child: Padding(
-              padding: EdgeInsets.only(bottom: 30.0),
-              child: Text(
-                'Get started',
-                style: TextStyle(
-                  color: Color(0xFF5B16D0),
-                  fontSize: 20.0,
-                  fontWeight: FontWeight.bold,
+              height: 100.0,
+              width: double.infinity,
+              color: Colors.transparent,
+              child: GestureDetector(
+                onTap: () => print('Get Started!'),
+                child: Center(
+                  child: Padding(
+                    padding: EdgeInsets.only(bottom: 30.0),
+                    child: Text(
+                      'Get started',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20.0,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
                 ),
               ),
-            ),
-          ),
-        ),
-      )
+            )
           : Text(''),
     );
   }

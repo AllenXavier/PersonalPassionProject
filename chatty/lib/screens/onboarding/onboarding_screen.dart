@@ -1,6 +1,5 @@
 import 'package:chatty/screens/onboarding/components/onboard_page.dart';
 import 'package:chatty/screens/onboarding/data/onboard_page_data.dart';
-
 import 'package:flutter/material.dart';
 
 class Onboarding extends StatelessWidget {
@@ -9,13 +8,19 @@ class Onboarding extends StatelessWidget {
 
   _skipButtonPressed() {
     print('button pressed');
-    pageController.jumpToPage(
+    pageController.animateToPage(
       2,
+      duration: Duration(
+        milliseconds: 800,
+      ),
+      curve: Curves.fastLinearToSlowEaseIn,
+
     );
   }
 
   @override
   Widget build(BuildContext context) {
+
     return Stack(
       children: <Widget>[
 
@@ -29,6 +34,7 @@ class Onboarding extends StatelessWidget {
             );
           },
         ),
+
         Container(
           width: double.infinity,
           height: 120,

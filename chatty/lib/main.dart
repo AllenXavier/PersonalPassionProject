@@ -9,6 +9,11 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'OnBoarding Demo',
+      theme: ThemeData(
+        bottomSheetTheme: BottomSheetThemeData(
+          backgroundColor: Colors.white30,
+        )
+      ),
       home: Home(),
     );
   }
