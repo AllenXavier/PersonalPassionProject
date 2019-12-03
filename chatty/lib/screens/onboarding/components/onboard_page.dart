@@ -80,11 +80,15 @@ class _OnboardPageState extends State<OnboardPage> {
                       child: Container(
                         child: Column(
                           children: <Widget>[
-                            Text(
-                              widget.pageModel.caption,
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 20.0,
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 8.0),
+                              child: Text(
+                                widget.pageModel.caption,
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 32.0,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
                             ),
                             Text(

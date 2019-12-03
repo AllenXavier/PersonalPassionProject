@@ -19,14 +19,9 @@ class _OnboardingState extends State<Onboarding> {
 
   _skipButtonPressed() {
     print('button pressed');
-    pageController.animateToPage(
-      2,
-      duration: Duration(
-        milliseconds: 800,
-      ),
-      curve: Curves.fastLinearToSlowEaseIn,
-
-    );
+    Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => mainScreen()));
   }
 
   _nextButtonPressed() {
@@ -83,7 +78,7 @@ class _OnboardingState extends State<Onboarding> {
               );
             },
           ),
-          buildExampleIndicatorWithShapeAndBottomPos(circleShape, 150),
+          buildExampleIndicatorWithShapeAndBottomPos(circleShape, 130),
 
           Container(
             width: double.infinity,
@@ -126,35 +121,37 @@ class _OnboardingState extends State<Onboarding> {
 
           Align(
             alignment: Alignment.bottomRight,
-            child: Padding(
-              padding: const EdgeInsets.all(32.0),
-              child: _currentPage != onboardData.length - 1
-                  ? FlatButton(
-                padding: EdgeInsets.all(0),
-                onPressed: _nextButtonPressed,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(
-                        'Next',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 22.0,
+            child: Container(
+              width: 190.0,
+              child: Padding(
+                padding: const EdgeInsets.all(32.0),
+                child: _currentPage != onboardData.length - 1
+                    ? FlatButton(
+                  onPressed: _nextButtonPressed,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          'Next',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 22.0,
+                          ),
                         ),
                       ),
-                    ),
-                    Icon(
-                      Icons.arrow_forward,
-                      color: Colors.white,
-                      size: 32,
-                    ),
-                  ],
-                ),
-              )
-                  : Text(''),
+                      Icon(
+                        Icons.arrow_forward,
+                        color: Colors.white,
+                        size: 32,
+                      ),
+                    ],
+                  ),
+                )
+                    : Text(''),
+              ),
             ),
           ),
         ],
