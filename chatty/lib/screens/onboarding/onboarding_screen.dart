@@ -87,7 +87,7 @@ class _OnboardingState extends State<Onboarding> {
               alignment: Alignment.bottomCenter,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.baseline,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 textBaseline: TextBaseline.alphabetic,
                 children: <Widget>[
                   Padding(
@@ -96,6 +96,7 @@ class _OnboardingState extends State<Onboarding> {
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 30.0,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
                   ),
