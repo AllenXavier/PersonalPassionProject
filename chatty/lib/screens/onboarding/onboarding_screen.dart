@@ -1,5 +1,6 @@
 import 'package:chatty/screens/onboarding/components/onboard_page.dart';
 import 'package:chatty/screens/onboarding/data/onboard_page_data.dart';
+import 'package:chatty/screens/mainscreen/main_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:worm_indicator/shape.dart';
 import 'package:worm_indicator/worm_indicator.dart';
@@ -160,11 +161,19 @@ class _OnboardingState extends State<Onboarding> {
       ),
       bottomSheet: _currentPage == _numPages - 1
           ? Container(
+        decoration: new BoxDecoration(
+            color: Colors.white30,
+            borderRadius: new BorderRadius.only(
+                topLeft:  const  Radius.circular(40.0),
+                topRight: const  Radius.circular(40.0))
+        ),
         height: 100.0,
         width: double.infinity,
-        color: Colors.transparent,
         child: GestureDetector(
-          onTap: () => print('Get Started!'),
+          onTap: () => Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => mainScreen()),
+          ),
           child: Center(
             child: Padding(
               padding: EdgeInsets.only(bottom: 30.0),

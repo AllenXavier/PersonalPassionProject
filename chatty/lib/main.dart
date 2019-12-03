@@ -11,7 +11,7 @@ class MyApp extends StatelessWidget {
       title: 'OnBoarding Demo',
       theme: ThemeData(
         bottomSheetTheme: BottomSheetThemeData(
-          backgroundColor: Colors.white30,
+          backgroundColor: Colors.transparent,
         )
       ),
       home: Home(),
