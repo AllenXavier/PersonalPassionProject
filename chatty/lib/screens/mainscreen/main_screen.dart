@@ -42,7 +42,7 @@ class mainScreen extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.only(bottom: 16.0),
                   child: Container(
-                    width: 220.0,
+                    width: 230.0,
                     child: FlatButton(
                       textColor: Colors.white,
                       color: Colors.white30,
@@ -76,7 +76,7 @@ class mainScreen extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.only(bottom: 8.0),
                   child: Container(
-                    width: 220.0,
+                    width: 230.0,
                     child: FlatButton(
                       textColor: Colors.white,
                       color: Colors.white30,
