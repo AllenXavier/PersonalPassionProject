@@ -1,6 +1,7 @@
 import 'package:chatty/screens/onboarding/components/onboard_page.dart';
 import 'package:chatty/screens/onboarding/data/onboard_page_data.dart';
 import 'package:chatty/screens/mainscreen/main_screen.dart';
+import 'package:chatty/animation/EnterExitRoute.dart';
 import 'package:flutter/material.dart';
 import 'package:worm_indicator/shape.dart';
 import 'package:worm_indicator/worm_indicator.dart';
@@ -21,7 +22,7 @@ class _OnboardingState extends State<Onboarding> {
     print('button pressed');
     Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => mainScreen()));
+        EnterExitRoute(enterPage: mainScreen()));
   }
 
   _nextButtonPressed() {
@@ -170,7 +171,7 @@ class _OnboardingState extends State<Onboarding> {
         child: GestureDetector(
           onTap: () => Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => mainScreen()),
+            EnterExitRoute(enterPage: mainScreen()),
           ),
           child: Center(
             child: Padding(
