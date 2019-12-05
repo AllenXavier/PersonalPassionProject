@@ -1,10 +1,109 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 
 
-class mainScreen extends StatelessWidget {
+class mainScreen extends StatefulWidget {
+  @override
+  _mainScreenState createState() => _mainScreenState();
+}
+
+class _mainScreenState extends State<mainScreen> {
+
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+
+  void _showDialog() {
+    // flutter defined function
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return Dialog(
+            shape: RoundedRectangleBorder(
+                borderRadius:
+                BorderRadius.circular(32.0)), //this right here
+            child: Container(
+              height: 250,
+              child: Padding(
+                padding: const EdgeInsets.all(32.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    TextField(
+                      decoration: InputDecoration(
+                          border: InputBorder.none,
+                          hintText: 'What do you want to remember?'),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: <Widget>[
+                        SizedBox(
+                          width: 100.0,
+                          child: RaisedButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: Text(
+                              "Save",
+                              style: TextStyle(color: Colors.white),
+                            ),
+                            color: const Color(0xFF3594DD),
+                          ),
+                        ),
+                        SizedBox(
+                          width: 100.0,
+                          child: RaisedButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: Text(
+                              "Save",
+                              style: TextStyle(color: Colors.white),
+                            ),
+                            color: const Color(0xFF3594DD),
+                          ),
+                        ),
+                      ],
+                    )
+                  ],
+                ),
+              ),
+            ),
+          );
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
+      drawer: Drawer(
+        child: Stack(
+          children: <Widget>[
+            Align(
+              alignment: Alignment.bottomRight,
+              child: Container(
+                child: Padding(
+                  padding: const EdgeInsets.all(32.0),
+                  child: Container(
+                    child: IconButton(
+                      color: const Color(0xFF3594DD),
+                      icon: Icon(
+                        Icons.arrow_back_ios,
+                        color: const Color(0xFF3594DD),
+                        size: 32,
+                      ),
+                      tooltip: 'Test',
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        )
+      ),
       body: Stack(
         children: <Widget>[
           Container(
@@ -47,10 +146,10 @@ class mainScreen extends StatelessWidget {
                       textColor: Colors.white,
                       color: Colors.white30,
                       onPressed: () {
-                        // TODO
+                        _showDialog();
                       },
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
+                        mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: <Widget>[
                           Padding(
@@ -117,16 +216,14 @@ class mainScreen extends StatelessWidget {
                 padding: const EdgeInsets.all(32.0),
                 child: Container(
                   child: IconButton(
-                    color: Colors.white30,
+                    color: Colors.black,
                     icon: Icon(
                       Icons.settings,
                       color: Colors.white,
                       size: 32,
                     ),
                     tooltip: 'Test',
-                    onPressed: (){
-                      print("tapped");
-                    },
+                      onPressed: () => _scaffoldKey.currentState.openDrawer(),
                   ),
                 ),
               ),
@@ -137,6 +234,12 @@ class mainScreen extends StatelessWidget {
     );
   }
 }
+
+//void openDrawer() {
+//  if (_endDrawerKey.currentState != null && _endDrawerOpened)
+//    _endDrawerKey.currentState.close();
+//  _drawerKey.currentState?.open();
+//}
 
 Widget showLogo() {
   return new Hero(
@@ -151,3 +254,4 @@ Widget showLogo() {
     ),
   );
 }
+
