@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:nearby_connections/nearby_connections.dart';
+
 
 
 class mainScreen extends StatefulWidget {
@@ -179,8 +181,8 @@ class _mainScreenState extends State<mainScreen> {
                     child: FlatButton(
                       textColor: Colors.white,
                       color: Colors.white30,
-                      onPressed: () {
-                        // TODO
+                      onPressed: () async {
+                        await Nearby().askPermission();
                       },
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.end,
