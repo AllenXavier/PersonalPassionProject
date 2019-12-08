@@ -184,7 +184,7 @@ class _mainScreenState extends State<mainScreen> {
                       color: Colors.white30,
                       onPressed: () async {
                         if (Platform.isIOS) {
-                          print("ios");
+                          printy();
                         }
                         if (Platform.isAndroid) {
                           await Nearby().askPermission();
