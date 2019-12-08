@@ -22,8 +22,18 @@ class _mainScreenState extends State<mainScreen> {
   static const platform = const MethodChannel('be.xavierallen.chatty/multipeerConnectivity');
 
   final String userName = Random().nextInt(1000).toString();
+  String sentText = "testText";
   final Strategy strategy = Strategy.P2P_STAR;
   String cId = "0";
+
+  final myController = TextEditingController();
+
+  @override
+  void dispose() {
+    // Clean up the controller when the widget is disposed.
+    myController.dispose();
+    super.dispose();
+  }
 
   void _showDialog() {
     // flutter defined function
@@ -136,7 +146,7 @@ class _mainScreenState extends State<mainScreen> {
                 ),
                 Padding(
                   padding: const EdgeInsets.all(32.0),
-                  child: Text('Join or become a host.',
+                  child: Text('Join or become a host: $userName',
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: Colors.white,
@@ -179,7 +189,7 @@ class _mainScreenState extends State<mainScreen> {
                         }
                       },
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: <Widget>[
                           Padding(
@@ -269,7 +279,7 @@ class _mainScreenState extends State<mainScreen> {
                         }
                       },
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: <Widget>[
                           Padding(
@@ -293,6 +303,77 @@ class _mainScreenState extends State<mainScreen> {
                     ),
                   ),
                 ),
+                Divider(),
+                Text(
+                  "Sending Data",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 12.0,
+                  ),
+                ),
+                Container(
+                  width: 230.0,
+                  child: TextField(
+                    style: new TextStyle(color: Colors.white),
+                    controller: myController,
+                    decoration: new InputDecoration(
+                        border: new OutlineInputBorder(
+                          borderRadius: const BorderRadius.all(
+                            const Radius.circular(4.0),
+                          ),
+                          borderSide: BorderSide(
+                            width: 0,
+                            style: BorderStyle.none,
+                          ),
+                        ),
+                        filled: true,
+                        hintStyle: new TextStyle(color: Colors.white),
+                        hintText: "Type in your text",
+                        fillColor: Colors.white30),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 16.0, top: 16.0),
+                  child: Container(
+                    width: 230.0,
+                    child: FlatButton(
+                      textColor: Colors.white,
+                      color: Colors.white30,
+                      onPressed: () async {
+                        String a = myController.text;
+                        print("Sending $a to $cId");
+                        myController.clear();
+                        Nearby().sendPayload(cId, Uint8List.fromList(a.codeUnits));
+                      },
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
+                          Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Text(
+                              'Send',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 20.0,
+                              ),
+                            ),
+                          ),
+                          Icon(
+                            Icons.send,
+                            color: Colors.white,
+                            size: 32,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                Text(
+                  "$sentText"
+                )
               ],
             ),
           ),
@@ -319,6 +400,12 @@ class _mainScreenState extends State<mainScreen> {
         ],
       )
     );
+  }
+
+  void showSnackbar(dynamic a) {
+    Scaffold.of(context).showSnackBar(SnackBar(
+      content: Text(a.toString()),
+    ));
   }
 
   void printy() async {
@@ -354,25 +441,23 @@ class _mainScreenState extends State<mainScreen> {
                     id,
                     onPayLoadRecieved: (endid, payload) {
                       if (payload.type == PayloadType.BYTES) {
-                        print(endid + ": " + String.fromCharCodes(payload.bytes));
-                      } else if (payload.type == PayloadType.FILE) {
-                        print(endid + ": File transfer started");
+                        print(String.fromCharCodes(payload.bytes));
+                        setState(() => sentText = (String.fromCharCodes(payload.bytes)));
                       }
                     },
                     onPayloadTransferUpdate: (endid, payloadTransferUpdate) {
-                      if (payloadTransferUpdate.status ==
-                          PayloadStatus.IN_PROGRRESS) {
-                        print(payloadTransferUpdate.bytesTransferred);
-                      } else if (payloadTransferUpdate.status ==
-                          PayloadStatus.FAILURE) {
+                      if (payloadTransferUpdate.status == PayloadStatus.IN_PROGRRESS) {
+
+                        print("progress");
+
+                      } else if (payloadTransferUpdate.status == PayloadStatus.FAILURE) {
+
                         print("failed");
-                        print(endid + ": FAILED to transfer file");
-                      } else if (payloadTransferUpdate.status ==
-                          PayloadStatus.SUCCESS) {
-                        print(
-                            "success, total bytes = ${payloadTransferUpdate.totalBytes}");
-                        print(endid +
-                            ": SUCCESS in file transfer (file is un-named in downloads) ");
+
+                      } else if (payloadTransferUpdate.status == PayloadStatus.SUCCESS) {
+
+                        print("success");
+
                       }
                     },
                   );
@@ -396,12 +481,6 @@ class _mainScreenState extends State<mainScreen> {
     );
   }
 }
-
-//void openDrawer() {
-//  if (_endDrawerKey.currentState != null && _endDrawerOpened)
-//    _endDrawerKey.currentState.close();
-//  _drawerKey.currentState?.open();
-//}
 
 Widget showLogo() {
   return new Hero(
