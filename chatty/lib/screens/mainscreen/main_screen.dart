@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:nearby_connections/nearby_connections.dart';
 import 'package:flutter/services.dart';
+import 'package:chatty/animation/EnterExitRoute.dart';
+import 'package:chatty/screens/chatscreen/chat_screen.dart';
+
 import 'dart:math';
 import 'dart:typed_data';
 import 'dart:io';
@@ -140,10 +143,6 @@ class _mainScreenState extends State<mainScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Align(
-                  alignment: Alignment.topCenter,
-                  child: showLogo(),
-                ),
                 Padding(
                   padding: const EdgeInsets.all(32.0),
                   child: Text('Join or become a host: $userName',
@@ -303,13 +302,19 @@ class _mainScreenState extends State<mainScreen> {
                     ),
                   ),
                 ),
-                Divider(),
-                Text(
-                  "Sending Data",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 12.0,
+                Divider(
+
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 32.0),
+                  child: Text(
+                    "Send a Message",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 32.0,
+                    ),
                   ),
                 ),
                 Container(
@@ -371,8 +376,21 @@ class _mainScreenState extends State<mainScreen> {
                     ),
                   ),
                 ),
-                Text(
-                  "$sentText"
+                Container(
+                  decoration: new BoxDecoration(
+                    borderRadius: new BorderRadius.circular(16.0),
+                    color: Colors.white30,
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      "$sentText",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16.0,
+                      ),
+                    ),
+                  ),
                 )
               ],
             ),
@@ -391,11 +409,38 @@ class _mainScreenState extends State<mainScreen> {
                       size: 32,
                     ),
                     tooltip: 'Test',
-                      onPressed: () => _scaffoldKey.currentState.openDrawer(),
+                    onPressed: () => _scaffoldKey.currentState.openDrawer(),
                   ),
                 ),
               ),
             ),
+          ),
+          Align(
+            alignment: Alignment.bottomRight,
+            child: Container(
+              child: Padding(
+                padding: const EdgeInsets.all(32.0),
+                child: Container(
+                  child: IconButton(
+                    color: Colors.black,
+                    icon: Icon(
+                      Icons.chat,
+                      color: Colors.white,
+                      size: 32,
+                    ),
+                    tooltip: 'Test',
+                    onPressed: () {
+                      Navigator.push(
+                          context, EnterExitRoute(enterPage: chatScreen()));
+                    },
+                  ),
+                ),
+              ),
+            ),
+          ),
+          Align(
+            alignment: Alignment.topCenter,
+            child: showLogo(),
           ),
         ],
       )
@@ -437,12 +482,15 @@ class _mainScreenState extends State<mainScreen> {
                 onPressed: () {
                   Navigator.pop(context);
                   cId = id;
+//                  Navigator.push(
+//                      context,
+//                      EnterExitRoute(enterPage: chatScreen()));
                   Nearby().acceptConnection(
                     id,
                     onPayLoadRecieved: (endid, payload) {
                       if (payload.type == PayloadType.BYTES) {
                         print(String.fromCharCodes(payload.bytes));
-                        setState(() => sentText = (String.fromCharCodes(payload.bytes)));
+                        setState(() => sentText = (info.endpointName + ":" + String.fromCharCodes(payload.bytes)));
                       }
                     },
                     onPayloadTransferUpdate: (endid, payloadTransferUpdate) {
@@ -486,7 +534,7 @@ Widget showLogo() {
   return new Hero(
     tag: 'hero',
     child: Padding(
-      padding: EdgeInsets.all(32.0),
+      padding: EdgeInsets.only(top: 120.0),
       child: CircleAvatar(
         backgroundColor: Colors.transparent,
         radius: 48.0,
