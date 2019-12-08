@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:nearby_connections/nearby_connections.dart';
-
-
+import 'package:flutter/services.dart';
+import 'dart:io';
 
 class mainScreen extends StatefulWidget {
   @override
@@ -12,6 +12,7 @@ class mainScreen extends StatefulWidget {
 class _mainScreenState extends State<mainScreen> {
 
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  static const platform = const MethodChannel('be.xavierallen.chatty/multipeerConnectivity');
 
   void _showDialog() {
     // flutter defined function
@@ -182,7 +183,12 @@ class _mainScreenState extends State<mainScreen> {
                       textColor: Colors.white,
                       color: Colors.white30,
                       onPressed: () async {
-                        await Nearby().askPermission();
+                        if (Platform.isIOS) {
+                          print("ios");
+                        }
+                        if (Platform.isAndroid) {
+                          await Nearby().askPermission();
+                        }
                       },
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.end,
@@ -234,6 +240,18 @@ class _mainScreenState extends State<mainScreen> {
         ],
       )
     );
+  }
+
+  void printy() async {
+    String value;
+
+    try{
+      value = await platform.invokeMethod("Printy");
+    }catch (e){
+      print(e);
+    }
+
+    print(value);
   }
 }
 

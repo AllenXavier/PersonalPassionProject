@@ -1,0 +1,22 @@
+PODS:
+  - Flutter (1.0.0)
+  - nearby_connections (0.0.1):
+    - Flutter
+
+DEPENDENCIES:
+  - Flutter (from `.symlinks/flutter/ios`)
+  - nearby_connections (from `.symlinks/plugins/nearby_connections/ios`)
+
+EXTERNAL SOURCES:
+  Flutter:
+    :path: ".symlinks/flutter/ios"
+  nearby_connections:
+    :path: ".symlinks/plugins/nearby_connections/ios"
+
+SPEC CHECKSUMS:
+  Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
+  nearby_connections: 51db5c5edd47cce604270093aa7313315ba9f32a
+
+PODFILE CHECKSUM: 7fb83752f59ead6285236625b82473f90b1cb932
+
+COCOAPODS: 1.6.1
