@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:nearby_connections/nearby_connections.dart';
 import 'package:flutter/services.dart';
+import 'dart:math';
+import 'dart:typed_data';
 import 'dart:io';
 
 class mainScreen extends StatefulWidget {
@@ -11,8 +13,17 @@ class mainScreen extends StatefulWidget {
 
 class _mainScreenState extends State<mainScreen> {
 
+  void initState() {
+    super.initState();
+    Nearby().askPermission();
+  }
+
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   static const platform = const MethodChannel('be.xavierallen.chatty/multipeerConnectivity');
+
+  final String userName = Random().nextInt(1000).toString();
+  final Strategy strategy = Strategy.P2P_STAR;
+  String cId = "0";
 
   void _showDialog() {
     // flutter defined function
@@ -34,35 +45,27 @@ class _mainScreenState extends State<mainScreen> {
                     TextField(
                       decoration: InputDecoration(
                           border: InputBorder.none,
-                          hintText: 'What do you want to remember?'),
+                          hintText: 'Waiting for people to join...'),
                     ),
+                    new CircularProgressIndicator(),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: <Widget>[
-                        SizedBox(
-                          width: 100.0,
-                          child: RaisedButton(
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                            child: Text(
-                              "Save",
-                              style: TextStyle(color: Colors.white),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 32.0),
+                          child: SizedBox(
+                            width: 150.0,
+                            child: RaisedButton(
+                              onPressed: () async {
+                                await Nearby().stopAllEndpoints();
+                                Navigator.of(context).pop();
+                              },
+                              child: Text(
+                                "Stop",
+                                style: TextStyle(color: Colors.white),
+                              ),
+                              color: const Color(0xFF3594DD),
                             ),
-                            color: const Color(0xFF3594DD),
-                          ),
-                        ),
-                        SizedBox(
-                          width: 100.0,
-                          child: RaisedButton(
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                            child: Text(
-                              "Save",
-                              style: TextStyle(color: Colors.white),
-                            ),
-                            color: const Color(0xFF3594DD),
                           ),
                         ),
                       ],
@@ -134,6 +137,7 @@ class _mainScreenState extends State<mainScreen> {
                 Padding(
                   padding: const EdgeInsets.all(32.0),
                   child: Text('Join or become a host.',
+                    textAlign: TextAlign.center,
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 32.0,
@@ -148,8 +152,31 @@ class _mainScreenState extends State<mainScreen> {
                     child: FlatButton(
                       textColor: Colors.white,
                       color: Colors.white30,
-                      onPressed: () {
-                        _showDialog();
+                      onPressed: () async {
+                        if (Platform.isIOS) {
+                          _showDialog();
+                        }
+                        if (Platform.isAndroid) {
+                          try {
+                            bool a = await Nearby().startAdvertising(
+                              userName,
+                              strategy,
+                              onConnectionInitiated: (id, info) {
+                                oci(id, info);
+                              },
+                              onConnectionResult: (id, status) {
+                                print(status);
+                              },
+                              onDisconnected: (id) {
+                                print(id);
+                              },
+                            );
+                            print(a);
+                          } catch (e) {
+                            print(e);
+                          }
+                          _showDialog();
+                        }
                       },
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -159,9 +186,10 @@ class _mainScreenState extends State<mainScreen> {
                             padding: const EdgeInsets.all(16.0),
                             child: Text(
                               'Become host',
+                              textAlign: TextAlign.center,
                               style: TextStyle(
                                 color: Colors.white,
-                                fontSize: 24.0,
+                                fontSize: 20.0,
                               ),
                             ),
                           ),
@@ -185,22 +213,73 @@ class _mainScreenState extends State<mainScreen> {
                       onPressed: () async {
                         if (Platform.isIOS) {
                           printy();
+                          print("ios");
                         }
                         if (Platform.isAndroid) {
-                          await Nearby().askPermission();
+                          print("android");
+                          try {
+                            bool a = await Nearby().startDiscovery(
+                              userName,
+                              strategy,
+                              onEndpointFound: (id, name, serviceId) {
+                                print("in callback");
+                                showModalBottomSheet(
+                                  context: context,
+                                  builder: (builder) {
+                                    return Center(
+                                      child: Column(
+                                        children: <Widget>[
+                                          Text("id: " + id),
+                                          Text("Name: " + name),
+                                          Text("ServiceId: " + serviceId),
+                                          RaisedButton(
+                                            child: Text("Request Connection"),
+                                            onPressed: () {
+                                              Navigator.pop(context);
+                                              Nearby().requestConnection(
+                                                userName,
+                                                id,
+                                                onConnectionInitiated: (id, info) {
+                                                  oci(id, info);
+                                                },
+                                                onConnectionResult: (id, status) {
+                                                  print(status);
+                                                },
+                                                onDisconnected: (id) {
+                                                  print(id);
+                                                },
+                                              );
+                                            },
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  },
+                                );
+                              },
+                              onEndpointLost: (id) {
+                                print(id);
+                              },
+                            );
+                            print(a);
+                          } catch (e) {
+                           print(e);
+                          }
+                          _showDialog();
                         }
                       },
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
+                        mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: <Widget>[
                           Padding(
                             padding: const EdgeInsets.all(16.0),
                             child: Text(
                               'Join chat',
+                              textAlign: TextAlign.center,
                               style: TextStyle(
                                 color: Colors.white,
-                                fontSize: 24.0,
+                                fontSize: 20.0,
                               ),
                             ),
                           ),
@@ -252,6 +331,69 @@ class _mainScreenState extends State<mainScreen> {
     }
 
     print(value);
+  }
+
+  /// Called on a Connection request (on both devices)
+  void oci(String id, ConnectionInfo info) {
+    showModalBottomSheet(
+      context: context,
+      builder: (builder) {
+        return Center(
+          child: Column(
+            children: <Widget>[
+              Text("id: " + id),
+              Text("Token: " + info.authenticationToken),
+              Text("Name" + info.endpointName),
+              Text("Incoming: " + info.isIncomingConnection.toString()),
+              RaisedButton(
+                child: Text("Accept Connection"),
+                onPressed: () {
+                  Navigator.pop(context);
+                  cId = id;
+                  Nearby().acceptConnection(
+                    id,
+                    onPayLoadRecieved: (endid, payload) {
+                      if (payload.type == PayloadType.BYTES) {
+                        print(endid + ": " + String.fromCharCodes(payload.bytes));
+                      } else if (payload.type == PayloadType.FILE) {
+                        print(endid + ": File transfer started");
+                      }
+                    },
+                    onPayloadTransferUpdate: (endid, payloadTransferUpdate) {
+                      if (payloadTransferUpdate.status ==
+                          PayloadStatus.IN_PROGRRESS) {
+                        print(payloadTransferUpdate.bytesTransferred);
+                      } else if (payloadTransferUpdate.status ==
+                          PayloadStatus.FAILURE) {
+                        print("failed");
+                        print(endid + ": FAILED to transfer file");
+                      } else if (payloadTransferUpdate.status ==
+                          PayloadStatus.SUCCESS) {
+                        print(
+                            "success, total bytes = ${payloadTransferUpdate.totalBytes}");
+                        print(endid +
+                            ": SUCCESS in file transfer (file is un-named in downloads) ");
+                      }
+                    },
+                  );
+                },
+              ),
+              RaisedButton(
+                child: Text("Reject Connection"),
+                onPressed: () async {
+                  Navigator.pop(context);
+                  try {
+                    await Nearby().rejectConnection(id);
+                  } catch (e) {
+                    print(e);
+                  }
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 }
 
