@@ -28,7 +28,8 @@ class _mainScreenState extends State<mainScreen> {
   restore() async {
     final SharedPreferences sharedPrefs = await SharedPreferences.getInstance();
     setState(() {
-      userName = (sharedPrefs.getString('userName') ?? Random().nextInt(1000).toString());
+      userName = (sharedPrefs.getString('userName') ??
+          Random().nextInt(1000).toString());
     });
   }
 
@@ -57,6 +58,7 @@ class _mainScreenState extends State<mainScreen> {
   //Set username, Strategy and id
   final Strategy strategy = Strategy.P2P_STAR;
   String cId = "0";
+  String endpointName = "";
 
   String sentText = "testText";
 
@@ -74,6 +76,7 @@ class _mainScreenState extends State<mainScreen> {
     });
   }
 
+  //Username edit visibility
   bool _visible = false;
 
   @override
@@ -282,9 +285,10 @@ class _mainScreenState extends State<mainScreen> {
                                           size: 24,
                                         ),
                                         onPressed: () {
-                                          if (userController.text != ""){
+                                          if (userController.text != "") {
                                             userName = userController.text;
-                                            save('userName', userController.text);
+                                            save('userName',
+                                                userController.text);
                                           }
                                           userController.clear();
                                           setState(() {
@@ -389,7 +393,7 @@ class _mainScreenState extends State<mainScreen> {
                         color: Colors.white30,
                         onPressed: () async {
                           if (Platform.isIOS) {
-                            _showDialog("Waiting for people to join");
+                            _showDialog("Waiting for people to join...");
                           }
                           if (Platform.isAndroid) {
                             try {
@@ -410,7 +414,7 @@ class _mainScreenState extends State<mainScreen> {
                             } catch (e) {
                               print(e);
                             }
-                            _showDialog("Waiting for people to join");
+                            _showDialog("Waiting for people to join...");
                           }
                         },
                         child: Row(
@@ -624,97 +628,98 @@ class _mainScreenState extends State<mainScreen> {
                       ),
                     ),
                   ),
-                  Divider(),
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 32.0),
-                    child: Text(
-                      "Send a Message",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 32.0,
-                      ),
-                    ),
-                  ),
-                  Container(
-                    width: 230.0,
-                    child: TextField(
-                      style: new TextStyle(color: Colors.white),
-                      controller: myController,
-                      decoration: new InputDecoration(
-                          border: new OutlineInputBorder(
-                            borderRadius: const BorderRadius.all(
-                              const Radius.circular(30.0),
-                            ),
-                            borderSide: BorderSide(
-                              width: 0,
-                              style: BorderStyle.none,
-                            ),
-                          ),
-                          filled: true,
-                          hintStyle: new TextStyle(color: Colors.white),
-                          hintText: "Type in your text",
-                          fillColor: Colors.white30),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 16.0, top: 16.0),
-                    child: Container(
-                      width: 230.0,
-                      child: FlatButton(
-                        shape: new RoundedRectangleBorder(
-                            borderRadius: new BorderRadius.circular(30.0)),
-                        textColor: Colors.white,
-                        color: Colors.white30,
-                        onPressed: () async {
-                          String a = myController.text;
-                          print("Sending $a to $cId");
-                          myController.clear();
-                          Nearby().sendPayload(
-                              cId, Uint8List.fromList(a.codeUnits));
-                        },
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: <Widget>[
-                            Padding(
-                              padding: const EdgeInsets.all(16.0),
-                              child: Text(
-                                'Send',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 20.0,
-                                ),
-                              ),
-                            ),
-                            Icon(
-                              Icons.send,
-                              color: Colors.white,
-                              size: 32,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                  Container(
-                    decoration: new BoxDecoration(
-                      borderRadius: new BorderRadius.circular(32.0),
-                      color: Colors.white30,
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Text(
-                        "$sentText",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16.0,
-                        ),
-                      ),
-                    ),
-                  )
+//                  OLD FUNCTIONS
+//                  Divider(),
+//                  Padding(
+//                    padding: const EdgeInsets.only(bottom: 32.0),
+//                    child: Text(
+//                      "Send a Message",
+//                      textAlign: TextAlign.center,
+//                      style: TextStyle(
+//                        color: Colors.white,
+//                        fontWeight: FontWeight.bold,
+//                        fontSize: 32.0,
+//                      ),
+//                    ),
+//                  ),
+//                  Container(
+//                    width: 230.0,
+//                    child: TextField(
+//                      style: new TextStyle(color: Colors.white),
+//                      controller: myController,
+//                      decoration: new InputDecoration(
+//                          border: new OutlineInputBorder(
+//                            borderRadius: const BorderRadius.all(
+//                              const Radius.circular(30.0),
+//                            ),
+//                            borderSide: BorderSide(
+//                              width: 0,
+//                              style: BorderStyle.none,
+//                            ),
+//                          ),
+//                          filled: true,
+//                          hintStyle: new TextStyle(color: Colors.white),
+//                          hintText: "Type in your text",
+//                          fillColor: Colors.white30),
+//                    ),
+//                  ),
+//                  Padding(
+//                    padding: const EdgeInsets.only(bottom: 16.0, top: 16.0),
+//                    child: Container(
+//                      width: 230.0,
+//                      child: FlatButton(
+//                        shape: new RoundedRectangleBorder(
+//                            borderRadius: new BorderRadius.circular(30.0)),
+//                        textColor: Colors.white,
+//                        color: Colors.white30,
+//                        onPressed: () async {
+//                          String a = myController.text;
+//                          print("Sending $a to $cId");
+//                          myController.clear();
+//                          Nearby().sendPayload(
+//                              cId, Uint8List.fromList(a.codeUnits));
+//                        },
+//                        child: Row(
+//                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+//                          crossAxisAlignment: CrossAxisAlignment.center,
+//                          children: <Widget>[
+//                            Padding(
+//                              padding: const EdgeInsets.all(16.0),
+//                              child: Text(
+//                                'Send',
+//                                textAlign: TextAlign.center,
+//                                style: TextStyle(
+//                                  color: Colors.white,
+//                                  fontSize: 20.0,
+//                                ),
+//                              ),
+//                            ),
+//                            Icon(
+//                              Icons.send,
+//                              color: Colors.white,
+//                              size: 32,
+//                            ),
+//                          ],
+//                        ),
+//                      ),
+//                    ),
+//                  ),
+//                  Container(
+//                    decoration: new BoxDecoration(
+//                      borderRadius: new BorderRadius.circular(32.0),
+//                      color: Colors.white30,
+//                    ),
+//                    child: Padding(
+//                      padding: const EdgeInsets.all(16.0),
+//                      child: Text(
+//                        "$sentText",
+//                        style: TextStyle(
+//                          color: Colors.white,
+//                          fontSize: 16.0,
+//                        ),
+//                      ),
+//                    ),
+//                  )
                 ],
               ),
             ),
@@ -738,29 +743,29 @@ class _mainScreenState extends State<mainScreen> {
                 ),
               ),
             ),
-            Align(
-              alignment: Alignment.bottomRight,
-              child: Container(
-                child: Padding(
-                  padding: const EdgeInsets.all(32.0),
-                  child: Container(
-                    child: IconButton(
-                      color: Colors.black54,
-                      icon: Icon(
-                        Icons.chat,
-                        color: Colors.white,
-                        size: 32,
-                      ),
-                      tooltip: 'Test',
-                      onPressed: () {
-                        Navigator.push(
-                            context, EnterExitRoute(enterPage: chatScreen()));
-                      },
-                    ),
-                  ),
-                ),
-              ),
-            ),
+//            Align(
+//              alignment: Alignment.bottomRight,
+//              child: Container(
+//                child: Padding(
+//                  padding: const EdgeInsets.all(32.0),
+//                  child: Container(
+//                    child: IconButton(
+//                      color: Colors.black54,
+//                      icon: Icon(
+//                        Icons.chat,
+//                        color: Colors.white,
+//                        size: 32,
+//                      ),
+//                      tooltip: 'Test',
+//                      onPressed: () {
+//                        Navigator.push(
+//                            context, EnterExitRoute(enterPage: chatScreen()));
+//                      },
+//                    ),
+//                  ),
+//                ),
+//              ),
+//            ),
             Align(
               alignment: Alignment.topCenter,
               child: showLogo(),
@@ -821,15 +826,13 @@ class _mainScreenState extends State<mainScreen> {
                               borderRadius: new BorderRadius.circular(30.0)),
                           onPressed: () {
                             Navigator.pop(context);
+                            endpointName = info.endpointName;
                             cId = id;
-//                  Navigator.push(
-//                      context,
-//                      EnterExitRoute(enterPage: chatScreen()));
                             Nearby().acceptConnection(
                               id,
                               onPayLoadRecieved: (endid, payload) {
                                 if (payload.type == PayloadType.BYTES) {
-                                  print(String.fromCharCodes(payload.bytes));
+//                                  print(String.fromCharCodes(payload.bytes));
                                   setState(() => sentText = (info.endpointName +
                                       ":" +
                                       String.fromCharCodes(payload.bytes)));
@@ -850,6 +853,13 @@ class _mainScreenState extends State<mainScreen> {
                               },
                             );
                             Navigator.of(context).pop();
+                            Navigator.push(
+                                context,
+                                EnterExitRoute(
+                                    enterPage: chatScreen(
+                                      userId: cId,
+                                      endName: endpointName,
+                                    )));
                           },
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,

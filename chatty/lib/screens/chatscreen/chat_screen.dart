@@ -10,6 +10,12 @@ import 'package:chatty/animation/EnterExitRoute.dart';
 
 
 class chatScreen extends StatefulWidget {
+  final String userId;
+  final String endName;
+
+  chatScreen({Key key, this.userId, this.endName}) : super (key: key);
+
+
   @override
   _chatScreenState createState() => _chatScreenState();
 }
@@ -137,10 +143,35 @@ class _chatScreenState extends State<chatScreen> {
                                 color: Colors.blue,
                                 onPressed: () {
                                   String a = myController.text;
-                                  print("Sending $a to $cId");
+                                  String b = widget.userId;
+                                  print("Sending $a to $b");
                                   print("send");
                                   myController.clear();
-                                  Nearby().sendPayload(cId, Uint8List.fromList(a.codeUnits));
+                                  Nearby().sendPayload(b, Uint8List.fromList(a.codeUnits));
+
+                                  Nearby().acceptConnection(
+                                    b,
+                                    onPayLoadRecieved: (endid, payload) {
+                                      if (payload.type == PayloadType.BYTES) {
+//                                  print(String.fromCharCodes(payload.bytes));
+                                        setState(() => sentText = (widget.endName +": " + String.fromCharCodes(payload.bytes)));
+                                      }
+                                    },
+                                    onPayloadTransferUpdate:
+                                        (endid, payloadTransferUpdate) {
+                                      if (payloadTransferUpdate.status ==
+                                          PayloadStatus.IN_PROGRRESS) {
+                                        print("progress");
+                                      } else if (payloadTransferUpdate.status ==
+                                          PayloadStatus.FAILURE) {
+                                        print("failed");
+                                      } else if (payloadTransferUpdate.status ==
+                                          PayloadStatus.SUCCESS) {
+                                        print("success");
+                                      }
+                                    },
+                                  );
+
                                 },
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -193,6 +224,7 @@ class _chatScreenState extends State<chatScreen> {
                       ),
                       onPressed: () {
                         Navigator.of(context).pop();
+                        Nearby().stopAllEndpoints();
                       },
                     ),
                   ),
