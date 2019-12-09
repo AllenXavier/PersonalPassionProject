@@ -22,11 +22,43 @@ class chatScreen extends StatefulWidget {
 
 class _chatScreenState extends State<chatScreen> {
 
+  String welcomeMessage = "welcome to the chat";
+
+  void initState() {
+    super.initState();
+    String a = welcomeMessage;
+    String b = widget.userId;
+    Nearby().sendPayload(b, Uint8List.fromList(a.codeUnits));
+    Nearby().acceptConnection(
+      b,
+      onPayLoadRecieved: (endid, payload) {
+        if (payload.type == PayloadType.BYTES) {
+//                                  print(String.fromCharCodes(payload.bytes));
+          setState(() => sentText = (widget.endName +": " + String.fromCharCodes(payload.bytes)));
+        }
+        Nearby().sendPayload(b, Uint8List.fromList(a.codeUnits));
+      },
+      onPayloadTransferUpdate:
+          (endid, payloadTransferUpdate) {
+        if (payloadTransferUpdate.status ==
+            PayloadStatus.IN_PROGRRESS) {
+          print("progress");
+        } else if (payloadTransferUpdate.status ==
+            PayloadStatus.FAILURE) {
+          print("failed");
+        } else if (payloadTransferUpdate.status ==
+            PayloadStatus.SUCCESS) {
+          print("success");
+        }
+      },
+    );
+  }
+
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   static const platform = const MethodChannel('be.xavierallen.chatty/multipeerConnectivity');
 
   final String userName = Random().nextInt(1000).toString();
-  String sentText = "testText";
+  String sentText = "Waiting on user...";
   final Strategy strategy = Strategy.P2P_STAR;
   String cId = "0";
 
@@ -66,7 +98,7 @@ class _chatScreenState extends State<chatScreen> {
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: <Widget>[
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
                           Container(
                             decoration: new BoxDecoration(

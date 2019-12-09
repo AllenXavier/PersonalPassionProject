@@ -1,5 +1,6 @@
 import UIKit
 import Flutter
+import MultipeerConnectivity
 
 @UIApplicationMain
 @objc class AppDelegate: FlutterAppDelegate {
@@ -7,6 +8,11 @@ import Flutter
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
   ) -> Bool {
+    
+    var peerID: MCPeerID!
+    var mcSession: MCSession!
+    var mcAdvertiserAssistant: MCAdvertiserAssistant!
+    var messageToSend: String!
     
     let controller : FlutterViewController = window?.rootViewController as! FlutterViewController
     let CHANNEL = FlutterMethodChannel(name: "be.xavierallen.chatty/multipeerConnectivity", binaryMessenger: controller.binaryMessenger)
