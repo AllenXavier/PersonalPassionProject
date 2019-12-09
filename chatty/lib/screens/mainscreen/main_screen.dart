@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:chatty/animation/EnterExitRoute.dart';
 import 'package:chatty/screens/chatscreen/chat_screen.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:ui' show ImageFilter;
 import 'dart:math';
 import 'dart:typed_data';
@@ -19,16 +20,41 @@ class _mainScreenState extends State<mainScreen> {
   void initState() {
     super.initState();
     Nearby().askPermission();
+    restore();
+  }
+
+  String userName = Random().nextInt(1000).toString();
+
+  restore() async {
+    final SharedPreferences sharedPrefs = await SharedPreferences.getInstance();
+    setState(() {
+      userName = (sharedPrefs.getString('userName') ?? Random().nextInt(1000).toString());
+    });
   }
 
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  final sharedPrefs = SharedPreferences.getInstance();
+
+  save(String key, dynamic value) async {
+    final SharedPreferences sharedPrefs = await SharedPreferences.getInstance();
+    if (value is bool) {
+      sharedPrefs.setBool(key, value);
+    } else if (value is String) {
+      sharedPrefs.setString(key, value);
+    } else if (value is int) {
+      sharedPrefs.setInt(key, value);
+    } else if (value is double) {
+      sharedPrefs.setDouble(key, value);
+    } else if (value is List<String>) {
+      sharedPrefs.setStringList(key, value);
+    }
+  }
 
   //Set channel for platform specific code
   static const platform =
       const MethodChannel('be.xavierallen.chatty/multipeerConnectivity');
 
   //Set username, Strategy and id
-  String userName = Random().nextInt(1000).toString();
   final Strategy strategy = Strategy.P2P_STAR;
   String cId = "0";
 
@@ -258,6 +284,7 @@ class _mainScreenState extends State<mainScreen> {
                                         onPressed: () {
                                           if (userController.text != ""){
                                             userName = userController.text;
+                                            save('userName', userController.text);
                                           }
                                           userController.clear();
                                           setState(() {

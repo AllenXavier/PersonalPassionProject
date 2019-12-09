@@ -1,4 +1,6 @@
 import 'package:chatty/screens/onboarding/onboarding_screen.dart';
+import 'package:chatty/screens/mainscreen/main_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 
 void main() => runApp(MyApp());
