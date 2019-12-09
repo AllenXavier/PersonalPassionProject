@@ -14,6 +14,7 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^0.1.2
   worm_indicator: 0.2.4
+  image_picker: ^0.6.2+1
   nearby_connections: ^1.0.2+1
 
 dev_dependencies:

@@ -105,6 +105,8 @@ class _OnboardingState extends State<Onboarding> {
                   Padding(
                     padding: const EdgeInsets.only(right: 32.0),
                     child: FlatButton(
+                      shape: new RoundedRectangleBorder(
+                          borderRadius: new BorderRadius.circular(30.0)),
                       color: Colors.white30,
                       child: Text('Skip',
                         style: TextStyle(

@@ -59,19 +59,48 @@ class _chatScreenState extends State<chatScreen> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: <Widget>[
-                      Text(
-                          "$sentText"
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: <Widget>[
+                          Container(
+                            decoration: new BoxDecoration(
+                              borderRadius: new BorderRadius.circular(32.0),
+                              color: Colors.white30,
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: Text(
+                                "$sentText",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 16.0,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                       Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Text('Send a message',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 32.0,
-                            fontWeight: FontWeight.bold,
-                          ),
+                        padding: const EdgeInsets.only(top:16.0),
+                        child: Divider(
+                          color: Colors.white30,
                         ),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: <Widget>[
+                          Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Text('Send a message',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 32.0,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                       Container(
                         width: MediaQuery.of(context).size.width,
@@ -81,7 +110,7 @@ class _chatScreenState extends State<chatScreen> {
                           decoration: new InputDecoration(
                               border: new OutlineInputBorder(
                                 borderRadius: const BorderRadius.all(
-                                  const Radius.circular(4.0),
+                                  const Radius.circular(30.0),
                                 ),
                                 borderSide: BorderSide(
                                   width: 0,
@@ -98,10 +127,12 @@ class _chatScreenState extends State<chatScreen> {
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: <Widget>[
                           Padding(
-                            padding: const EdgeInsets.only(top: 8.0),
+                            padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
                             child: Container(
                               width: 150.0,
                               child: FlatButton(
+                                shape: new RoundedRectangleBorder(
+                                    borderRadius: new BorderRadius.circular(30.0)),
                                 textColor: Colors.white,
                                 color: Colors.blue,
                                 onPressed: () {
@@ -109,7 +140,7 @@ class _chatScreenState extends State<chatScreen> {
                                   print("Sending $a to $cId");
                                   print("send");
                                   myController.clear();
-//                                  Nearby().sendPayload(cId, Uint8List.fromList(a.codeUnits));
+                                  Nearby().sendPayload(cId, Uint8List.fromList(a.codeUnits));
                                 },
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -146,6 +177,27 @@ class _chatScreenState extends State<chatScreen> {
             Align(
               alignment: Alignment.topCenter,
               child: showLogo(),
+            ),
+            Align(
+              alignment: Alignment.topLeft,
+              child: Container(
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 16.0, top: 40.0),
+                  child: Container(
+                    child: IconButton(
+                      color: Colors.white,
+                      icon: Icon(
+                        Icons.arrow_back_ios,
+                        color: Colors.white,
+                        size: 32,
+                      ),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  ),
+                ),
+              ),
             ),
           ],
         )
