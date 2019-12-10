@@ -210,7 +210,7 @@ class _chatScreenState extends State<chatScreen> {
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               color: Colors.white,
-                              fontSize: 32.0,
+                              fontSize: 24.0,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
@@ -244,7 +244,7 @@ class _chatScreenState extends State<chatScreen> {
                         Padding(
                           padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
                           child: Container(
-                            width: 150.0,
+                            width: 120.0,
                             child: FlatButton(
                               shape: new RoundedRectangleBorder(
                                   borderRadius:
@@ -317,14 +317,14 @@ class _chatScreenState extends State<chatScreen> {
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
                                         color: Colors.white,
-                                        fontSize: 20.0,
+                                        fontSize: 16.0,
                                       ),
                                     ),
                                   ),
                                   Icon(
                                     Icons.send,
                                     color: Colors.white,
-                                    size: 32,
+                                    size: 16,
                                   ),
                                 ],
                               ),
