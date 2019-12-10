@@ -628,98 +628,6 @@ class _mainScreenState extends State<mainScreen> {
                       ),
                     ),
                   ),
-//                  OLD FUNCTIONS
-//                  Divider(),
-//                  Padding(
-//                    padding: const EdgeInsets.only(bottom: 32.0),
-//                    child: Text(
-//                      "Send a Message",
-//                      textAlign: TextAlign.center,
-//                      style: TextStyle(
-//                        color: Colors.white,
-//                        fontWeight: FontWeight.bold,
-//                        fontSize: 32.0,
-//                      ),
-//                    ),
-//                  ),
-//                  Container(
-//                    width: 230.0,
-//                    child: TextField(
-//                      style: new TextStyle(color: Colors.white),
-//                      controller: myController,
-//                      decoration: new InputDecoration(
-//                          border: new OutlineInputBorder(
-//                            borderRadius: const BorderRadius.all(
-//                              const Radius.circular(30.0),
-//                            ),
-//                            borderSide: BorderSide(
-//                              width: 0,
-//                              style: BorderStyle.none,
-//                            ),
-//                          ),
-//                          filled: true,
-//                          hintStyle: new TextStyle(color: Colors.white),
-//                          hintText: "Type in your text",
-//                          fillColor: Colors.white30),
-//                    ),
-//                  ),
-//                  Padding(
-//                    padding: const EdgeInsets.only(bottom: 16.0, top: 16.0),
-//                    child: Container(
-//                      width: 230.0,
-//                      child: FlatButton(
-//                        shape: new RoundedRectangleBorder(
-//                            borderRadius: new BorderRadius.circular(30.0)),
-//                        textColor: Colors.white,
-//                        color: Colors.white30,
-//                        onPressed: () async {
-//                          String a = myController.text;
-//                          print("Sending $a to $cId");
-//                          myController.clear();
-//                          Nearby().sendPayload(
-//                              cId, Uint8List.fromList(a.codeUnits));
-//                        },
-//                        child: Row(
-//                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-//                          crossAxisAlignment: CrossAxisAlignment.center,
-//                          children: <Widget>[
-//                            Padding(
-//                              padding: const EdgeInsets.all(16.0),
-//                              child: Text(
-//                                'Send',
-//                                textAlign: TextAlign.center,
-//                                style: TextStyle(
-//                                  color: Colors.white,
-//                                  fontSize: 20.0,
-//                                ),
-//                              ),
-//                            ),
-//                            Icon(
-//                              Icons.send,
-//                              color: Colors.white,
-//                              size: 32,
-//                            ),
-//                          ],
-//                        ),
-//                      ),
-//                    ),
-//                  ),
-//                  Container(
-//                    decoration: new BoxDecoration(
-//                      borderRadius: new BorderRadius.circular(32.0),
-//                      color: Colors.white30,
-//                    ),
-//                    child: Padding(
-//                      padding: const EdgeInsets.all(16.0),
-//                      child: Text(
-//                        "$sentText",
-//                        style: TextStyle(
-//                          color: Colors.white,
-//                          fontSize: 16.0,
-//                        ),
-//                      ),
-//                    ),
-//                  )
                 ],
               ),
             ),
@@ -743,29 +651,29 @@ class _mainScreenState extends State<mainScreen> {
                 ),
               ),
             ),
-//            Align(
-//              alignment: Alignment.bottomRight,
-//              child: Container(
-//                child: Padding(
-//                  padding: const EdgeInsets.all(32.0),
-//                  child: Container(
-//                    child: IconButton(
-//                      color: Colors.black54,
-//                      icon: Icon(
-//                        Icons.chat,
-//                        color: Colors.white,
-//                        size: 32,
-//                      ),
-//                      tooltip: 'Test',
-//                      onPressed: () {
-//                        Navigator.push(
-//                            context, EnterExitRoute(enterPage: chatScreen()));
-//                      },
-//                    ),
-//                  ),
-//                ),
-//              ),
-//            ),
+            Align(
+              alignment: Alignment.bottomRight,
+              child: Container(
+                child: Padding(
+                  padding: const EdgeInsets.all(32.0),
+                  child: Container(
+                    child: IconButton(
+                      color: Colors.black54,
+                      icon: Icon(
+                        Icons.chat,
+                        color: Colors.white,
+                        size: 32,
+                      ),
+                      tooltip: 'Test',
+                      onPressed: () {
+                        Navigator.push(
+                            context, EnterExitRoute(enterPage: chatScreen()));
+                      },
+                    ),
+                  ),
+                ),
+              ),
+            ),
             Align(
               alignment: Alignment.topCenter,
               child: showLogo(),
