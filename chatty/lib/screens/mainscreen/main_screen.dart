@@ -676,7 +676,7 @@ class _mainScreenState extends State<mainScreen> {
             ),
             Align(
               alignment: Alignment.topCenter,
-              child: showLogo(),
+              child: showLogo(48.0),
             ),
           ],
         ));
@@ -849,14 +849,14 @@ class _mainScreenState extends State<mainScreen> {
   }
 }
 
-Widget showLogo() {
+Widget showLogo(size) {
   return new Hero(
     tag: 'hero',
     child: Padding(
       padding: EdgeInsets.only(top: 80.0),
       child: CircleAvatar(
         backgroundColor: Colors.transparent,
-        radius: 48.0,
+        radius: size,
         child: Image.asset('assets/images/chatty_logo.png'),
       ),
     ),

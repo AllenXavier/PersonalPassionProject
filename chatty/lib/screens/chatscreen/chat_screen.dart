@@ -131,13 +131,14 @@ class _chatScreenState extends State<chatScreen> {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: <Widget>[
                     Container(
-                      height: 200.0,
+                      height: 150.0,
                     ),
                     Flexible(
                       child: ListView.builder(
                           controller: _scrollController,
                           shrinkWrap: true,
                           itemCount: listMessagesItems.length,
+                          // ignore: missing_return
                           itemBuilder: (BuildContext ctxt, int index) {
                             final item = listMessagesItems[index];
                             if (item is yourMessage) {
@@ -381,7 +382,7 @@ class _chatScreenState extends State<chatScreen> {
             ),
             Align(
               alignment: Alignment.topCenter,
-              child: showLogo(),
+              child: showLogo(32.0),
             ),
             Align(
               alignment: Alignment.topLeft,
