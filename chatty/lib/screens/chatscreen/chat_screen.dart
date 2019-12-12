@@ -7,6 +7,7 @@ import 'dart:typed_data';
 import 'package:flutter/scheduler.dart';
 import 'dart:io';
 import 'package:chatty/screens/mainscreen/main_screen.dart';
+import 'package:intl/intl.dart';
 import 'package:chatty/animation/EnterExitRoute.dart';
 
 class chatScreen extends StatefulWidget {
@@ -25,13 +26,15 @@ abstract class ListItem {}
 // A ListItem that contains data to display a heading.
 class myMessage implements ListItem {
   final String message;
-  myMessage(this.message);
+  final String time;
+  myMessage(this.message,this.time);
 }
 
 // A ListItem that contains data to display a heading.
 class yourMessage implements ListItem {
   final String message;
-  yourMessage(this.message);
+  final String time;
+  yourMessage(this.message,this.time);
 }
 
 class _chatScreenState extends State<chatScreen> {
@@ -42,6 +45,10 @@ class _chatScreenState extends State<chatScreen> {
     String b = widget.userId;
     String c = widget.endName;
     String a = "$c says: $welcomeMessage";
+    var now = DateTime.now();
+    String formattedDate = DateFormat('Hm').format(now);
+    print(formattedDate);
+
     Nearby().sendPayload(b, Uint8List.fromList(a.codeUnits));
     Nearby().acceptConnection(
       b,
@@ -52,7 +59,7 @@ class _chatScreenState extends State<chatScreen> {
               (widget.endName + ": " + String.fromCharCodes(payload.bytes)));
         }
         listMessagesItems
-            .add(yourMessage((String.fromCharCodes(payload.bytes))));
+            .add(yourMessage((String.fromCharCodes(payload.bytes)),formattedDate));
         setState(() {});
       },
       onPayloadTransferUpdate: (endid, payloadTransferUpdate) {
@@ -150,12 +157,28 @@ class _chatScreenState extends State<chatScreen> {
                                       ),
                                       child: Padding(
                                         padding: const EdgeInsets.all(16.0),
-                                        child: Text(
-                                          item.message,
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 14.0,
-                                          ),
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: <Widget>[
+                                            Text(
+                                              item.message,
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 14.0,
+                                              ),
+                                            ),
+
+                                            Padding(
+                                              padding: const EdgeInsets.only(top:2.0),
+                                              child: Text(
+                                                item.time,
+                                                style: TextStyle(
+                                                  color: Colors.white70,
+                                                  fontSize: 10.0,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                       ),
                                     ),
@@ -179,12 +202,28 @@ class _chatScreenState extends State<chatScreen> {
                                       ),
                                       child: Padding(
                                         padding: const EdgeInsets.all(16.0),
-                                        child: Text(
-                                          item.message,
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 14.0,
-                                          ),
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.end,
+                                          children: <Widget>[
+                                            Text(
+                                                item.message,
+                                                style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 14.0,
+                                                ),
+                                              ),
+
+                                            Padding(
+                                              padding: const EdgeInsets.only(top:2.0),
+                                              child: Text(
+                                                item.time,
+                                                style: TextStyle(
+                                                  color: Colors.white70,
+                                                  fontSize: 10.0,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                       ),
                                     ),
@@ -252,6 +291,9 @@ class _chatScreenState extends State<chatScreen> {
                               textColor: Colors.white,
                               color: Colors.blue,
                               onPressed: () {
+                                var now = DateTime.now();
+                                String formattedDate = DateFormat('Hm').format(now);
+                                print(formattedDate);
                                 String a = myController.text;
                                 String b = widget.userId;
                                 print("Sending $a to $b");
@@ -259,7 +301,7 @@ class _chatScreenState extends State<chatScreen> {
                                 myController.clear();
                                 Nearby().sendPayload(
                                     b, Uint8List.fromList(a.codeUnits));
-                                listMessagesItems.add(myMessage(a));
+                                listMessagesItems.add(myMessage(a,formattedDate));
                                 Nearby().acceptConnection(
                                   b,
                                   onPayLoadRecieved: (endid, payload) {
@@ -270,7 +312,7 @@ class _chatScreenState extends State<chatScreen> {
                                           ": " +
                                           String.fromCharCodes(payload.bytes)));
                                       listMessagesItems.add(yourMessage(
-                                          String.fromCharCodes(payload.bytes)));
+                                          String.fromCharCodes(payload.bytes),formattedDate));
                                       setState(() {});
                                       SchedulerBinding.instance.addPostFrameCallback((_) {
                                         _scrollController.animateTo(
