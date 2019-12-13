@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:nearby_connections/nearby_connections.dart';
 import 'package:flutter/services.dart';
 import 'dart:math';
+import 'dart:io';
 import 'dart:typed_data';
 import 'package:flutter/scheduler.dart';
 import 'package:chatty/screens/mainscreen/main_screen.dart';
@@ -265,145 +266,148 @@ class _chatScreenState extends State<chatScreen> {
                         ),
                       ],
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: <Widget>[
-                        Container(
-                          width: MediaQuery.of(context).size.width - 116,
-                          height: 51.0,
-                          child: TextField(
-                            style: new TextStyle(
-                                color: Colors.white,
-                              fontSize: 12.0,
-                            ),
-                            controller: myController,
-                            decoration: new InputDecoration(
-                                border: new OutlineInputBorder(
-                                  borderRadius: new BorderRadius.only(
-                                    topLeft: Radius.circular(30.0),
-                                    bottomLeft: Radius.circular(30.0),
-                                  ),
-                                  borderSide: BorderSide(
-                                    width: 0,
-                                    style: BorderStyle.none,
-                                  ),
-                                ),
-                                filled: true,
-                                hintStyle: new TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 12.0,
-                                ),
-                                hintText: "Type in your text...",
-                                fillColor: Colors.white30),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(
-                              top: 0.0, bottom: 0.0),
-                          child: Container(
-                            width: 100.0,
+                    Padding(
+                      padding: const EdgeInsets.only(bottom:16.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
+                          Container(
+                            width: MediaQuery.of(context).size.width - 116,
                             height: 51.0,
-                            child: FlatButton(
-                              shape: new RoundedRectangleBorder(
-                                  borderRadius:
-                                      new BorderRadius.only(
-                                        topRight: Radius.circular(30.0),
-                                        bottomRight: Radius.circular(30.0),
-                                      ),
+                            child: TextField(
+                              style: new TextStyle(
+                                  color: Colors.white,
+                                fontSize: 12.0,
                               ),
-                              textColor: Colors.white,
-                              color: Colors.blue,
-                              onPressed: () {
-                                var now = DateTime.now();
-                                String formattedDate =
-                                    DateFormat('Hm').format(now);
-                                print(formattedDate);
-                                String a = myController.text;
-                                String b = widget.userId;
-                                print("Sending $a to $b");
-                                print("send");
-                                myController.clear();
-                                Nearby().sendPayload(
-                                    b, Uint8List.fromList(a.codeUnits));
-                                listMessagesItems
-                                    .add(myMessage(a, formattedDate));
-                                Nearby().acceptConnection(
-                                  b,
-                                  onPayLoadRecieved: (endid, payload) {
-                                    if (payload.type == PayloadType.BYTES) {
-//                                  print(String.fromCharCodes(payload.bytes));
-                                      setState(() => sentText = (widget
-                                              .endName +
-                                          ": " +
-                                          String.fromCharCodes(payload.bytes)));
-                                      listMessagesItems.add(yourMessage(
-                                          String.fromCharCodes(payload.bytes),
-                                          formattedDate));
-                                      setState(() {});
-                                      SchedulerBinding.instance
-                                          .addPostFrameCallback((_) {
-                                        _scrollController.animateTo(
-                                          _scrollController
-                                              .position.maxScrollExtent,
-                                          duration:
-                                              const Duration(milliseconds: 300),
-                                          curve: Curves.easeOut,
-                                        );
-                                      });
-                                    }
-                                  },
-                                  onPayloadTransferUpdate:
-                                      (endid, payloadTransferUpdate) {
-                                    if (payloadTransferUpdate.status ==
-                                        PayloadStatus.IN_PROGRRESS) {
-                                      print("progress");
-                                    } else if (payloadTransferUpdate.status ==
-                                        PayloadStatus.FAILURE) {
-                                      print("failed");
-                                    } else if (payloadTransferUpdate.status ==
-                                        PayloadStatus.SUCCESS) {
-                                      print("success");
-                                    }
-                                  },
-                                );
-                                FocusScope.of(context)
-                                    .requestFocus(FocusNode());
-                                SchedulerBinding.instance
-                                    .addPostFrameCallback((_) {
-                                  _scrollController.animateTo(
-                                    _scrollController.position.maxScrollExtent,
-                                    duration:
-                                        const Duration(milliseconds: 1000),
-                                    curve: Curves.easeOut,
-                                  );
-                                });
-                              },
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: <Widget>[
-                                  Text(
-                                      'Send',
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 16.0,
-                                      ),
+                              controller: myController,
+                              decoration: new InputDecoration(
+                                  border: new OutlineInputBorder(
+                                    borderRadius: new BorderRadius.only(
+                                      topLeft: Radius.circular(30.0),
+                                      bottomLeft: Radius.circular(30.0),
                                     ),
-
-                                  Icon(
-                                    Icons.send,
-                                    color: Colors.white,
-                                    size: 16,
+                                    borderSide: BorderSide(
+                                      width: 0,
+                                      style: BorderStyle.none,
+                                    ),
                                   ),
-                                ],
+                                  filled: true,
+                                  hintStyle: new TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 12.0,
+                                  ),
+                                  hintText: "Type in your text...",
+                                  fillColor: Colors.white30),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(
+                                top: 0.0, bottom: 0.0),
+                            child: Container(
+                              width: 100.0,
+                              height: 51.0,
+                              child: FlatButton(
+                                shape: new RoundedRectangleBorder(
+                                    borderRadius:
+                                        new BorderRadius.only(
+                                          topRight: Radius.circular(30.0),
+                                          bottomRight: Radius.circular(30.0),
+                                        ),
+                                ),
+                                textColor: Colors.white,
+                                color: Colors.blue,
+                                onPressed: () {
+                                  var now = DateTime.now();
+                                  String formattedDate =
+                                      DateFormat('Hm').format(now);
+                                  print(formattedDate);
+                                  String a = myController.text;
+                                  String b = widget.userId;
+                                  print("Sending $a to $b");
+                                  print("send");
+                                  myController.clear();
+                                  Nearby().sendPayload(
+                                      b, Uint8List.fromList(a.codeUnits));
+                                  listMessagesItems
+                                      .add(myMessage(a, formattedDate));
+                                  Nearby().acceptConnection(
+                                    b,
+                                    onPayLoadRecieved: (endid, payload) {
+                                      if (payload.type == PayloadType.BYTES) {
+//                                  print(String.fromCharCodes(payload.bytes));
+                                        setState(() => sentText = (widget
+                                                .endName +
+                                            ": " +
+                                            String.fromCharCodes(payload.bytes)));
+                                        listMessagesItems.add(yourMessage(
+                                            String.fromCharCodes(payload.bytes),
+                                            formattedDate));
+                                        setState(() {});
+                                        SchedulerBinding.instance
+                                            .addPostFrameCallback((_) {
+                                          _scrollController.animateTo(
+                                            _scrollController
+                                                .position.maxScrollExtent,
+                                            duration:
+                                                const Duration(milliseconds: 300),
+                                            curve: Curves.easeOut,
+                                          );
+                                        });
+                                      }
+                                    },
+                                    onPayloadTransferUpdate:
+                                        (endid, payloadTransferUpdate) {
+                                      if (payloadTransferUpdate.status ==
+                                          PayloadStatus.IN_PROGRRESS) {
+                                        print("progress");
+                                      } else if (payloadTransferUpdate.status ==
+                                          PayloadStatus.FAILURE) {
+                                        print("failed");
+                                      } else if (payloadTransferUpdate.status ==
+                                          PayloadStatus.SUCCESS) {
+                                        print("success");
+                                      }
+                                    },
+                                  );
+                                  FocusScope.of(context)
+                                      .requestFocus(FocusNode());
+                                  SchedulerBinding.instance
+                                      .addPostFrameCallback((_) {
+                                    _scrollController.animateTo(
+                                      _scrollController.position.maxScrollExtent,
+                                      duration:
+                                          const Duration(milliseconds: 1000),
+                                      curve: Curves.easeOut,
+                                    );
+                                  });
+                                },
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: <Widget>[
+                                    Text(
+                                        'Send',
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 16.0,
+                                        ),
+                                      ),
+
+                                    Icon(
+                                      Icons.send,
+                                      color: Colors.white,
+                                      size: 16,
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ],
                 ),

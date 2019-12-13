@@ -20,7 +20,9 @@ class mainScreen extends StatefulWidget {
 class _mainScreenState extends State<mainScreen> {
   void initState() {
     super.initState();
-    Nearby().askPermission();
+    if (Platform.isAndroid) {
+      Nearby().askPermission();
+    }
     restore();
     loadImageFromPreferences();
   }
@@ -411,7 +413,9 @@ class _mainScreenState extends State<mainScreen> {
                         color: Colors.white30,
                         onPressed: () async {
                           if (Platform.isIOS) {
-                            _showDialog("Waiting for people to join...");
+                            CreatePeer(userName);
+                            hostSession();
+//                            _showDialog("Waiting for people to join...");
                           }
                           if (Platform.isAndroid) {
                             try {
@@ -471,8 +475,8 @@ class _mainScreenState extends State<mainScreen> {
                         color: Colors.white30,
                         onPressed: () async {
                           if (Platform.isIOS) {
-                            printy();
                             print("ios");
+                            joinSession();
                           }
                           if (Platform.isAndroid) {
                             print("android");
@@ -684,8 +688,15 @@ class _mainScreenState extends State<mainScreen> {
                       ),
                       tooltip: 'Test',
                       onPressed: () {
-                        Navigator.push(
-                            context, EnterExitRoute(enterPage: chatScreen()));
+                        if (Platform.isIOS) {
+                          sendMessageIOS();
+                          Navigator.push(
+                              context, EnterExitRoute(enterPage: chatScreen()));
+                        }
+                        if (Platform.isAndroid) {
+                          Navigator.push(
+                              context, EnterExitRoute(enterPage: chatScreen()));
+                        }
                       },
                     ),
                   ),
@@ -706,11 +717,46 @@ class _mainScreenState extends State<mainScreen> {
     ));
   }
 
-  void printy() async {
+  void CreatePeer(String userNickName) async {
     String value;
 
     try {
-      value = await platform.invokeMethod("Printy");
+      value = await platform.invokeMethod("CreatePeer", userNickName);
+    } catch (e) {
+      print(e);
+    }
+    print(value);
+  }
+
+  void hostSession() async {
+    String value;
+
+    try {
+     value = await platform.invokeMethod("hostSession");
+    } catch (e) {
+      print(e);
+    }
+
+    print(value);
+  }
+
+  void joinSession() async {
+    String value;
+
+    try {
+      value = await platform.invokeMethod("joinSession");
+    } catch (e) {
+      print(e);
+    }
+
+    print(value);
+  }
+
+  void sendMessageIOS() async {
+    String value;
+
+    try {
+      value = await platform.invokeMethod("sendMessageIOS");
     } catch (e) {
       print(e);
     }
