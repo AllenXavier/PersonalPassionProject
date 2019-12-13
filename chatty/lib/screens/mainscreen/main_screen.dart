@@ -150,8 +150,14 @@ class _mainScreenState extends State<mainScreen> {
                                     borderRadius:
                                         new BorderRadius.circular(30.0)),
                                 onPressed: () async {
-                                  await Nearby().stopAllEndpoints();
-                                  Navigator.of(context).pop();
+                                  if (Platform.isIOS) {
+                                    Navigator.of(context).pop();
+                                  }
+                                  if (Platform.isAndroid) {
+                                    await Nearby().stopAllEndpoints();
+                                    Navigator.of(context).pop();
+                                  }
+
                                 },
                                 child: Row(
                                   mainAxisAlignment:
@@ -415,7 +421,7 @@ class _mainScreenState extends State<mainScreen> {
                           if (Platform.isIOS) {
                             CreatePeer(userName);
                             hostSession();
-//                            _showDialog("Waiting for people to join...");
+                            _showDialog("Waiting for people to join...");
                           }
                           if (Platform.isAndroid) {
                             try {

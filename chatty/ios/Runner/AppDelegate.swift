@@ -5,7 +5,16 @@ import MultipeerConnectivity
 @UIApplicationMain
 @objc class AppDelegate: FlutterAppDelegate, MCSessionDelegate, MCBrowserViewControllerDelegate {
     func session(_ session: MCSession, peer peerID: MCPeerID, didChange state: MCSessionState) {
-        print("test")
+       switch state {
+        case MCSessionState.connected:
+            print("Connected: \(peerID.displayName)")
+
+        case MCSessionState.connecting:
+            print("Connecting: \(peerID.displayName)")
+
+        case MCSessionState.notConnected:
+            print("Not Connected: \(peerID.displayName)")
+        }
     }
     
     func session(_ session: MCSession, didReceive data: Data, fromPeer peerID: MCPeerID) {
@@ -28,11 +37,11 @@ import MultipeerConnectivity
     }
     
     func browserViewControllerDidFinish(_ browserViewController: MCBrowserViewController) {
-         print("test")
+        self.window?.rootViewController?.dismiss(animated: true)
     }
     
     func browserViewControllerWasCancelled(_ browserViewController: MCBrowserViewController) {
-         print("test")
+        self.window?.rootViewController?.dismiss(animated: true)
     }
     
     
@@ -45,6 +54,8 @@ import MultipeerConnectivity
     var mcSession: MCSession!
     var mcAdvertiserAssistant: MCAdvertiserAssistant!
     var messageToSend: String!
+    var serviceAdvertiser: MCNearbyServiceAdvertiser!
+    var serviceBrowser: MCNearbyServiceBrowser!
     
     let controller : FlutterViewController = window?.rootViewController as! FlutterViewController
     let CHANNEL = FlutterMethodChannel(name: "be.xavierallen.chatty/multipeerConnectivity", binaryMessenger: controller.binaryMessenger)
@@ -71,9 +82,9 @@ import MultipeerConnectivity
         
         if call.method == "joinSession"
         {
-//              let mcBrowser = MCBrowserViewController(serviceType: "ioscreator-chat", session: mcSession)
-//              mcBrowser.delegate = self
-//              present(mcBrowser, animated: true)
+            let mcBrowser = MCBrowserViewController(serviceType: "ioscreator-chat", session: mcSession)
+            mcBrowser.delegate = self
+            self.window?.rootViewController?.present(mcBrowser, animated: true)
             result("join")
             
         }
