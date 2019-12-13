@@ -4,11 +4,12 @@ import 'package:nearby_connections/nearby_connections.dart';
 import 'package:flutter/services.dart';
 import 'package:chatty/animation/EnterExitRoute.dart';
 import 'package:chatty/screens/chatscreen/chat_screen.dart';
+import 'package:chatty/utility/utilityBase64.dart';
+
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:ui' show ImageFilter;
 import 'dart:math';
-import 'dart:typed_data';
 import 'dart:io';
 
 class mainScreen extends StatefulWidget {
@@ -21,6 +22,7 @@ class _mainScreenState extends State<mainScreen> {
     super.initState();
     Nearby().askPermission();
     restore();
+    loadImageFromPreferences();
   }
 
   String userName = Random().nextInt(1000).toString();
@@ -30,6 +32,18 @@ class _mainScreenState extends State<mainScreen> {
     setState(() {
       userName = (sharedPrefs.getString('userName') ??
           Random().nextInt(1000).toString());
+    });
+  }
+
+  Image imageFromPreferences;
+  loadImageFromPreferences() {
+    Utility.getImageFromPreferences().then((img) {
+      if (null == img) {
+        return;
+      }
+      setState(() {
+        imageFromPreferences = Utility.imageFromBase64String(img);
+      });
     });
   }
 
@@ -199,6 +213,9 @@ class _mainScreenState extends State<mainScreen> {
                                 GestureDetector(
                                   onTap: () {
                                     getImage();
+                                    Utility.saveImageToPreferences(
+                                        Utility.base64String(
+                                            _image.readAsBytesSync()));
                                   },
                                   child: _image == null
                                       ? Container(
@@ -219,9 +236,10 @@ class _mainScreenState extends State<mainScreen> {
                                           margin: EdgeInsets.only(
                                               top: 25.0, bottom: 10.0),
                                           child: CircleAvatar(
-                                              radius: 30.0,
-                                              backgroundImage:
-                                                  FileImage(_image))),
+                                            radius: 30.0,
+                                            backgroundImage: FileImage(_image),
+                                          ),
+                                        ),
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.all(8.0),
@@ -765,9 +783,9 @@ class _mainScreenState extends State<mainScreen> {
                                 context,
                                 EnterExitRoute(
                                     enterPage: chatScreen(
-                                      userId: cId,
-                                      endName: endpointName,
-                                    )));
+                                  userId: cId,
+                                  endName: endpointName,
+                                )));
                           },
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,

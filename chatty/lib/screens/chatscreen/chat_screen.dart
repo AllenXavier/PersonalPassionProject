@@ -5,10 +5,8 @@ import 'package:flutter/services.dart';
 import 'dart:math';
 import 'dart:typed_data';
 import 'package:flutter/scheduler.dart';
-import 'dart:io';
 import 'package:chatty/screens/mainscreen/main_screen.dart';
 import 'package:intl/intl.dart';
-import 'package:chatty/animation/EnterExitRoute.dart';
 
 class chatScreen extends StatefulWidget {
   final String userId;
@@ -27,14 +25,14 @@ abstract class ListItem {}
 class myMessage implements ListItem {
   final String message;
   final String time;
-  myMessage(this.message,this.time);
+  myMessage(this.message, this.time);
 }
 
 // A ListItem that contains data to display a heading.
 class yourMessage implements ListItem {
   final String message;
   final String time;
-  yourMessage(this.message,this.time);
+  yourMessage(this.message, this.time);
 }
 
 class _chatScreenState extends State<chatScreen> {
@@ -58,8 +56,8 @@ class _chatScreenState extends State<chatScreen> {
           setState(() => sentText =
               (widget.endName + ": " + String.fromCharCodes(payload.bytes)));
         }
-        listMessagesItems
-            .add(yourMessage((String.fromCharCodes(payload.bytes)),formattedDate));
+        listMessagesItems.add(
+            yourMessage((String.fromCharCodes(payload.bytes)), formattedDate));
         setState(() {});
       },
       onPayloadTransferUpdate: (endid, payloadTransferUpdate) {
@@ -100,8 +98,7 @@ class _chatScreenState extends State<chatScreen> {
     "test4",
     "Longer test for maximum testing"
   ];
-  List<ListItem> listMessagesItems = [
-  ];
+  List<ListItem> listMessagesItems = [];
   ScrollController _scrollController = new ScrollController();
 
   @override
@@ -157,9 +154,14 @@ class _chatScreenState extends State<chatScreen> {
                                         color: Colors.white30,
                                       ),
                                       child: Padding(
-                                        padding: const EdgeInsets.all(16.0),
+                                        padding: const EdgeInsets.only(
+                                            top: 12.0,
+                                            bottom: 12.0,
+                                            left: 16.0,
+                                            right: 16.0),
                                         child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
                                           children: <Widget>[
                                             Text(
                                               item.message,
@@ -168,9 +170,9 @@ class _chatScreenState extends State<chatScreen> {
                                                 fontSize: 14.0,
                                               ),
                                             ),
-
                                             Padding(
-                                              padding: const EdgeInsets.only(top:2.0),
+                                              padding: const EdgeInsets.only(
+                                                  top: 2.0),
                                               child: Text(
                                                 item.time,
                                                 style: TextStyle(
@@ -199,23 +201,29 @@ class _chatScreenState extends State<chatScreen> {
                                           bottomLeft: Radius.circular(30.0),
                                           bottomRight: Radius.circular(30.0),
                                         ),
-                                        color: Colors.greenAccent.withOpacity(0.8),
+                                        color:
+                                            Colors.greenAccent.withOpacity(0.8),
                                       ),
                                       child: Padding(
-                                        padding: const EdgeInsets.all(16.0),
+                                        padding: const EdgeInsets.only(
+                                            top: 12.0,
+                                            bottom: 12.0,
+                                            left: 16.0,
+                                            right: 16.0),
                                         child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.end,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.end,
                                           children: <Widget>[
                                             Text(
-                                                item.message,
-                                                style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 14.0,
-                                                ),
+                                              item.message,
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 14.0,
                                               ),
-
+                                            ),
                                             Padding(
-                                              padding: const EdgeInsets.only(top:2.0),
+                                              padding: const EdgeInsets.only(
+                                                  top: 2.0),
                                               child: Text(
                                                 item.time,
                                                 style: TextStyle(
@@ -235,7 +243,7 @@ class _chatScreenState extends State<chatScreen> {
                           }),
                     ),
                     Padding(
-                      padding: const EdgeInsets.only(top: 16.0),
+                      padding: const EdgeInsets.only(top: 4.0),
                       child: Divider(
                         color: Colors.white30,
                       ),
@@ -244,56 +252,72 @@ class _chatScreenState extends State<chatScreen> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: <Widget>[
                         Padding(
-                          padding: const EdgeInsets.all(16.0),
+                          padding: const EdgeInsets.all(8.0),
                           child: Text(
                             'Send a message',
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               color: Colors.white,
-                              fontSize: 24.0,
+                              fontSize: 20.0,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
                         ),
                       ],
                     ),
-                    Container(
-                      width: MediaQuery.of(context).size.width,
-                      child: TextField(
-                        style: new TextStyle(color: Colors.white),
-                        controller: myController,
-                        decoration: new InputDecoration(
-                            border: new OutlineInputBorder(
-                              borderRadius: const BorderRadius.all(
-                                const Radius.circular(30.0),
-                              ),
-                              borderSide: BorderSide(
-                                width: 0,
-                                style: BorderStyle.none,
-                              ),
-                            ),
-                            filled: true,
-                            hintStyle: new TextStyle(color: Colors.white),
-                            hintText: "Type in your text",
-                            fillColor: Colors.white30),
-                      ),
-                    ),
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
+                        Container(
+                          width: MediaQuery.of(context).size.width - 116,
+                          height: 51.0,
+                          child: TextField(
+                            style: new TextStyle(
+                                color: Colors.white,
+                              fontSize: 12.0,
+                            ),
+                            controller: myController,
+                            decoration: new InputDecoration(
+                                border: new OutlineInputBorder(
+                                  borderRadius: new BorderRadius.only(
+                                    topLeft: Radius.circular(30.0),
+                                    bottomLeft: Radius.circular(30.0),
+                                  ),
+                                  borderSide: BorderSide(
+                                    width: 0,
+                                    style: BorderStyle.none,
+                                  ),
+                                ),
+                                filled: true,
+                                hintStyle: new TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 12.0,
+                                ),
+                                hintText: "Type in your text...",
+                                fillColor: Colors.white30),
+                          ),
+                        ),
                         Padding(
-                          padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
+                          padding: const EdgeInsets.only(
+                              top: 0.0, bottom: 0.0),
                           child: Container(
-                            width: 120.0,
+                            width: 100.0,
+                            height: 51.0,
                             child: FlatButton(
                               shape: new RoundedRectangleBorder(
                                   borderRadius:
-                                      new BorderRadius.circular(30.0)),
+                                      new BorderRadius.only(
+                                        topRight: Radius.circular(30.0),
+                                        bottomRight: Radius.circular(30.0),
+                                      ),
+                              ),
                               textColor: Colors.white,
                               color: Colors.blue,
                               onPressed: () {
                                 var now = DateTime.now();
-                                String formattedDate = DateFormat('Hm').format(now);
+                                String formattedDate =
+                                    DateFormat('Hm').format(now);
                                 print(formattedDate);
                                 String a = myController.text;
                                 String b = widget.userId;
@@ -302,7 +326,8 @@ class _chatScreenState extends State<chatScreen> {
                                 myController.clear();
                                 Nearby().sendPayload(
                                     b, Uint8List.fromList(a.codeUnits));
-                                listMessagesItems.add(myMessage(a,formattedDate));
+                                listMessagesItems
+                                    .add(myMessage(a, formattedDate));
                                 Nearby().acceptConnection(
                                   b,
                                   onPayLoadRecieved: (endid, payload) {
@@ -313,12 +338,16 @@ class _chatScreenState extends State<chatScreen> {
                                           ": " +
                                           String.fromCharCodes(payload.bytes)));
                                       listMessagesItems.add(yourMessage(
-                                          String.fromCharCodes(payload.bytes),formattedDate));
+                                          String.fromCharCodes(payload.bytes),
+                                          formattedDate));
                                       setState(() {});
-                                      SchedulerBinding.instance.addPostFrameCallback((_) {
+                                      SchedulerBinding.instance
+                                          .addPostFrameCallback((_) {
                                         _scrollController.animateTo(
-                                          _scrollController.position.maxScrollExtent,
-                                          duration: const Duration(milliseconds: 300),
+                                          _scrollController
+                                              .position.maxScrollExtent,
+                                          duration:
+                                              const Duration(milliseconds: 300),
                                           curve: Curves.easeOut,
                                         );
                                       });
@@ -340,10 +369,12 @@ class _chatScreenState extends State<chatScreen> {
                                 );
                                 FocusScope.of(context)
                                     .requestFocus(FocusNode());
-                                SchedulerBinding.instance.addPostFrameCallback((_) {
+                                SchedulerBinding.instance
+                                    .addPostFrameCallback((_) {
                                   _scrollController.animateTo(
                                     _scrollController.position.maxScrollExtent,
-                                    duration: const Duration(milliseconds: 1000),
+                                    duration:
+                                        const Duration(milliseconds: 1000),
                                     curve: Curves.easeOut,
                                   );
                                 });
@@ -353,9 +384,7 @@ class _chatScreenState extends State<chatScreen> {
                                     MainAxisAlignment.spaceEvenly,
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: <Widget>[
-                                  Padding(
-                                    padding: const EdgeInsets.all(16.0),
-                                    child: Text(
+                                  Text(
                                       'Send',
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
@@ -363,7 +392,7 @@ class _chatScreenState extends State<chatScreen> {
                                         fontSize: 16.0,
                                       ),
                                     ),
-                                  ),
+
                                   Icon(
                                     Icons.send,
                                     color: Colors.white,
