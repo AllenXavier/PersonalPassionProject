@@ -482,6 +482,7 @@ class _mainScreenState extends State<mainScreen> {
                         onPressed: () async {
                           if (Platform.isIOS) {
                             print("ios");
+                            CreatePeer(userName);
                             joinSession();
                           }
                           if (Platform.isAndroid) {
@@ -695,7 +696,6 @@ class _mainScreenState extends State<mainScreen> {
                       tooltip: 'Test',
                       onPressed: () {
                         if (Platform.isIOS) {
-                          sendMessageIOS();
                           Navigator.push(
                               context, EnterExitRoute(enterPage: chatScreen()));
                         }
@@ -758,17 +758,6 @@ class _mainScreenState extends State<mainScreen> {
     print(value);
   }
 
-  void sendMessageIOS() async {
-    String value;
-
-    try {
-      value = await platform.invokeMethod("sendMessageIOS");
-    } catch (e) {
-      print(e);
-    }
-
-    print(value);
-  }
 
   /// Called on a Connection request (on both devices)
   void oci(String id, ConnectionInfo info) {

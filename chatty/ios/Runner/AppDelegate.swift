@@ -4,6 +4,9 @@ import MultipeerConnectivity
 
 @UIApplicationMain
 @objc class AppDelegate: FlutterAppDelegate, MCSessionDelegate, MCBrowserViewControllerDelegate {
+    
+    var messageFromPeer: String!
+    
     func session(_ session: MCSession, peer peerID: MCPeerID, didChange state: MCSessionState) {
        switch state {
         case MCSessionState.connected:
@@ -18,9 +21,18 @@ import MultipeerConnectivity
     }
     
     func session(_ session: MCSession, didReceive data: Data, fromPeer peerID: MCPeerID) {
-        print("test")
+        
          DispatchQueue.main.async { [unowned self] in
         let message = NSString(data: data as Data, encoding: String.Encoding.utf8.rawValue)! as String
+            print(message)
+            self.messageFromPeer = message
+            
+            let alert = UIAlertController(title: "New message", message: message, preferredStyle: .alert)
+
+            alert.addAction(UIAlertAction(title: "Yes", style: .default, handler: nil))
+            alert.addAction(UIAlertAction(title: "No", style: .cancel, handler: nil))
+
+             self.window?.rootViewController?.present(alert, animated: true)
         }
     }
     
@@ -61,13 +73,14 @@ import MultipeerConnectivity
     let CHANNEL = FlutterMethodChannel(name: "be.xavierallen.chatty/multipeerConnectivity", binaryMessenger: controller.binaryMessenger)
     
     CHANNEL.setMethodCallHandler{ [unowned self] (call: FlutterMethodCall, result: FlutterResult) -> Void in
+        
         if call.method == "CreatePeer"
         {
             let userNickName = call.arguments as! String
-           peerID = MCPeerID(displayName: userNickName)
+            peerID = MCPeerID(displayName: userNickName)
             mcSession = MCSession(peer: peerID, securityIdentity: nil, encryptionPreference: .required)
             mcSession.delegate = self
-            print(peerID)
+//            print(peerID)
             
             result(userNickName)
         }
@@ -82,6 +95,7 @@ import MultipeerConnectivity
         
         if call.method == "joinSession"
         {
+            
             let mcBrowser = MCBrowserViewController(serviceType: "ioscreator-chat", session: mcSession)
             mcBrowser.delegate = self
             self.window?.rootViewController?.present(mcBrowser, animated: true)
@@ -91,18 +105,33 @@ import MultipeerConnectivity
         
         if call.method == "sendMessageIOS"
         {
-            let messageToSend = "TESTING"
-            let message = messageToSend.data(using: String.Encoding.utf8, allowLossyConversion: false)
-//
-//            do {
-//
-//            }
-//            catch {
-//              print("Error sending message")
-//            }
-            result(messageToSend)
+            let messageFromFlutter = call.arguments as! String
+            let message = messageFromFlutter.data(using: String.Encoding.utf8, allowLossyConversion: false)
+
+            do {
+                try mcSession.send(message!, toPeers: mcSession.connectedPeers, with: .unreliable)
+            }
+            catch {
+              print("Error sending message")
+            }
+            
+            let peers = mcSession.connectedPeers.description
+            result(peers)
+        }
+        
+        if call.method == "receiveMessageIOS"
+        {
+            result(self.messageFromPeer)
             
         }
+        
+        if call.method == "closeConnectionIOS"
+        {
+            mcSession.disconnect();
+            let peers = mcSession.connectedPeers.description
+            result(peers)
+        }
+        
     }
     
     GeneratedPluginRegistrant.register(with: self)

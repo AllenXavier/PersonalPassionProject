@@ -48,29 +48,35 @@ class _chatScreenState extends State<chatScreen> {
     String formattedDate = DateFormat('Hm').format(now);
     print(formattedDate);
 
-    Nearby().sendPayload(b, Uint8List.fromList(a.codeUnits));
-    Nearby().acceptConnection(
-      b,
-      onPayLoadRecieved: (endid, payload) {
-        if (payload.type == PayloadType.BYTES) {
+    if (Platform.isIOS) {
+//      receiveMessageIOS();
+    }
+
+    if (Platform.isAndroid) {
+      Nearby().sendPayload(b, Uint8List.fromList(a.codeUnits));
+      Nearby().acceptConnection(
+        b,
+        onPayLoadRecieved: (endid, payload) {
+          if (payload.type == PayloadType.BYTES) {
 //                                  print(String.fromCharCodes(payload.bytes));
-          setState(() => sentText =
-              (widget.endName + ": " + String.fromCharCodes(payload.bytes)));
-        }
-        listMessagesItems.add(
-            yourMessage((String.fromCharCodes(payload.bytes)), formattedDate));
-        setState(() {});
-      },
-      onPayloadTransferUpdate: (endid, payloadTransferUpdate) {
-        if (payloadTransferUpdate.status == PayloadStatus.IN_PROGRRESS) {
-          print("progress");
-        } else if (payloadTransferUpdate.status == PayloadStatus.FAILURE) {
-          print("failed");
-        } else if (payloadTransferUpdate.status == PayloadStatus.SUCCESS) {
-          print("success");
-        }
-      },
-    );
+            setState(() => sentText =
+                (widget.endName + ": " + String.fromCharCodes(payload.bytes)));
+          }
+          listMessagesItems.add(yourMessage(
+              (String.fromCharCodes(payload.bytes)), formattedDate));
+          setState(() {});
+        },
+        onPayloadTransferUpdate: (endid, payloadTransferUpdate) {
+          if (payloadTransferUpdate.status == PayloadStatus.IN_PROGRRESS) {
+            print("progress");
+          } else if (payloadTransferUpdate.status == PayloadStatus.FAILURE) {
+            print("failed");
+          } else if (payloadTransferUpdate.status == PayloadStatus.SUCCESS) {
+            print("success");
+          }
+        },
+      );
+    }
   }
 
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
@@ -267,7 +273,7 @@ class _chatScreenState extends State<chatScreen> {
                       ],
                     ),
                     Padding(
-                      padding: const EdgeInsets.only(bottom:16.0),
+                      padding: const EdgeInsets.only(bottom: 16.0),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
@@ -277,7 +283,7 @@ class _chatScreenState extends State<chatScreen> {
                             height: 51.0,
                             child: TextField(
                               style: new TextStyle(
-                                  color: Colors.white,
+                                color: Colors.white,
                                 fontSize: 12.0,
                               ),
                               controller: myController,
@@ -302,18 +308,17 @@ class _chatScreenState extends State<chatScreen> {
                             ),
                           ),
                           Padding(
-                            padding: const EdgeInsets.only(
-                                top: 0.0, bottom: 0.0),
+                            padding:
+                                const EdgeInsets.only(top: 0.0, bottom: 0.0),
                             child: Container(
                               width: 100.0,
                               height: 51.0,
                               child: FlatButton(
                                 shape: new RoundedRectangleBorder(
-                                    borderRadius:
-                                        new BorderRadius.only(
-                                          topRight: Radius.circular(30.0),
-                                          bottomRight: Radius.circular(30.0),
-                                        ),
+                                  borderRadius: new BorderRadius.only(
+                                    topRight: Radius.circular(30.0),
+                                    bottomRight: Radius.circular(30.0),
+                                  ),
                                 ),
                                 textColor: Colors.white,
                                 color: Colors.blue,
@@ -324,58 +329,76 @@ class _chatScreenState extends State<chatScreen> {
                                   print(formattedDate);
                                   String a = myController.text;
                                   String b = widget.userId;
-                                  print("Sending $a to $b");
-                                  print("send");
                                   myController.clear();
-                                  Nearby().sendPayload(
-                                      b, Uint8List.fromList(a.codeUnits));
-                                  listMessagesItems
-                                      .add(myMessage(a, formattedDate));
-                                  Nearby().acceptConnection(
-                                    b,
-                                    onPayLoadRecieved: (endid, payload) {
-                                      if (payload.type == PayloadType.BYTES) {
+
+                                  if (Platform.isIOS) {
+                                    sendMessageIOS(a);
+                                    listMessagesItems
+                                        .add(myMessage(a, formattedDate));
+                                    setState(() {});
+                                    receiveMessageIOS();
+                                  }
+
+                                  if (Platform.isAndroid) {
+                                    Nearby().sendPayload(
+                                        b, Uint8List.fromList(a.codeUnits));
+                                    listMessagesItems
+                                        .add(myMessage(a, formattedDate));
+
+                                    Nearby().acceptConnection(
+                                      b,
+                                      onPayLoadRecieved: (endid, payload) {
+                                        if (payload.type == PayloadType.BYTES) {
 //                                  print(String.fromCharCodes(payload.bytes));
-                                        setState(() => sentText = (widget
-                                                .endName +
-                                            ": " +
-                                            String.fromCharCodes(payload.bytes)));
-                                        listMessagesItems.add(yourMessage(
-                                            String.fromCharCodes(payload.bytes),
-                                            formattedDate));
-                                        setState(() {});
-                                        SchedulerBinding.instance
-                                            .addPostFrameCallback((_) {
-                                          _scrollController.animateTo(
-                                            _scrollController
-                                                .position.maxScrollExtent,
-                                            duration:
-                                                const Duration(milliseconds: 300),
-                                            curve: Curves.easeOut,
-                                          );
-                                        });
-                                      }
-                                    },
-                                    onPayloadTransferUpdate:
-                                        (endid, payloadTransferUpdate) {
-                                      if (payloadTransferUpdate.status ==
-                                          PayloadStatus.IN_PROGRRESS) {
-                                        print("progress");
-                                      } else if (payloadTransferUpdate.status ==
-                                          PayloadStatus.FAILURE) {
-                                        print("failed");
-                                      } else if (payloadTransferUpdate.status ==
-                                          PayloadStatus.SUCCESS) {
-                                        print("success");
-                                      }
-                                    },
-                                  );
+                                          setState(() => sentText =
+                                              (widget.endName +
+                                                  ": " +
+                                                  String.fromCharCodes(
+                                                      payload.bytes)));
+
+                                          listMessagesItems.add(yourMessage(
+                                              String.fromCharCodes(
+                                                  payload.bytes),
+                                              formattedDate));
+                                          setState(() {});
+
+                                          SchedulerBinding.instance
+                                              .addPostFrameCallback((_) {
+                                            _scrollController.animateTo(
+                                              _scrollController
+                                                  .position.maxScrollExtent,
+                                              duration: const Duration(
+                                                  milliseconds: 300),
+                                              curve: Curves.easeOut,
+                                            );
+                                          });
+                                        }
+                                      },
+                                      onPayloadTransferUpdate:
+                                          (endid, payloadTransferUpdate) {
+                                        if (payloadTransferUpdate.status ==
+                                            PayloadStatus.IN_PROGRRESS) {
+                                          print("progress");
+                                        } else if (payloadTransferUpdate
+                                                .status ==
+                                            PayloadStatus.FAILURE) {
+                                          print("failed");
+                                        } else if (payloadTransferUpdate
+                                                .status ==
+                                            PayloadStatus.SUCCESS) {
+                                          print("success");
+                                        }
+                                      },
+                                    );
+                                  }
+
                                   FocusScope.of(context)
                                       .requestFocus(FocusNode());
                                   SchedulerBinding.instance
                                       .addPostFrameCallback((_) {
                                     _scrollController.animateTo(
-                                      _scrollController.position.maxScrollExtent,
+                                      _scrollController
+                                          .position.maxScrollExtent,
                                       duration:
                                           const Duration(milliseconds: 1000),
                                       curve: Curves.easeOut,
@@ -388,14 +411,13 @@ class _chatScreenState extends State<chatScreen> {
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: <Widget>[
                                     Text(
-                                        'Send',
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 16.0,
-                                        ),
+                                      'Send',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 16.0,
                                       ),
-
+                                    ),
                                     Icon(
                                       Icons.send,
                                       color: Colors.white,
@@ -431,8 +453,17 @@ class _chatScreenState extends State<chatScreen> {
                         size: 32,
                       ),
                       onPressed: () {
-                        Navigator.of(context).pop();
-                        Nearby().stopAllEndpoints();
+                        if (Platform.isAndroid) {
+                          Navigator.of(context).pop();
+                          Nearby().stopAllEndpoints();
+                        }
+
+                        if (Platform.isIOS) {
+                          Navigator.of(context).pop();
+
+                          //add close connections
+                          closeConnectionIOS();
+                        }
                       },
                     ),
                   ),
@@ -441,5 +472,48 @@ class _chatScreenState extends State<chatScreen> {
             ),
           ],
         ));
+  }
+
+  void sendMessageIOS(String a) async {
+    String value;
+
+    try {
+      value = await platform.invokeMethod("sendMessageIOS", a);
+    } catch (e) {
+      print(e);
+    }
+
+    print(value);
+  }
+
+  void receiveMessageIOS() async {
+    String value;
+
+    try {
+      value = await platform.invokeMethod("receiveMessageIOS");
+    } catch (e) {
+      print(e);
+    }
+
+    var now = DateTime.now();
+    String formattedDate =
+    DateFormat('Hm').format(now);
+
+    listMessagesItems.add(yourMessage(value, formattedDate));
+    setState(() {});
+
+    print(value);
+  }
+
+  void closeConnectionIOS() async {
+    String value;
+
+    try {
+      value = await platform.invokeMethod("closeConnectionIOS");
+    } catch (e) {
+      print(e);
+    }
+
+    print(value);
   }
 }
